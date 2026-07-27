@@ -1,14 +1,14 @@
 "use client";
 
+import { inputVariants } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/utils/utils";
 import { Portal } from "@ark-ui/react";
 import { ark } from "@ark-ui/react/factory";
 import { Select as ArkSelect, useSelectContext } from "@ark-ui/react/select";
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from "lucide-react";
 import type React from "react";
 import type { VariantProps } from "tailwind-variants";
-import { cn } from "@/lib/utils";
-import { inputVariants } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 
 export const useSelect = useSelectContext;
 
@@ -32,7 +32,8 @@ export const Select: ArkSelect.RootComponent = (props) => {
 };
 
 interface SelectTriggerProps
-  extends React.ComponentProps<typeof ArkSelect.Trigger>,
+  extends
+    React.ComponentProps<typeof ArkSelect.Trigger>,
     VariantProps<typeof inputVariants> {
   /**
    * Show clear trigger
@@ -62,7 +63,7 @@ export const SelectTrigger = (props: SelectTriggerProps) => {
           "data-placeholder-shown:text-muted-foreground/64",
           "data-[state=open]:border-primary data-[state=open]:ring-[3px] data-[state=open]:ring-ring/32",
           "[&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 [&_svg]:text-muted-foreground",
-          className
+          className,
         )}
         data-slot="select-trigger"
         {...rest}
@@ -85,7 +86,7 @@ export const SelectTrigger = (props: SelectTriggerProps) => {
 };
 
 export const SelectSeparator = (
-  props: React.ComponentProps<typeof Separator>
+  props: React.ComponentProps<typeof Separator>,
 ) => {
   const { className, ...rest } = props;
 
@@ -99,7 +100,7 @@ export const SelectSeparator = (
 };
 
 export const SelectValue = (
-  props: React.ComponentProps<typeof ArkSelect.ValueText>
+  props: React.ComponentProps<typeof ArkSelect.ValueText>,
 ) => {
   const { className, ...rest } = props;
 
@@ -109,7 +110,7 @@ export const SelectValue = (
         "min-w-0",
         "flex items-center gap-2",
         "truncate text-nowrap",
-        className
+        className,
       )}
       {...rest}
     />
@@ -117,7 +118,7 @@ export const SelectValue = (
 };
 
 export const SelectContent = (
-  props: React.ComponentProps<typeof ArkSelect.Content>
+  props: React.ComponentProps<typeof ArkSelect.Content>,
 ) => {
   const { className, ...rest } = props;
 
@@ -145,7 +146,7 @@ export const SelectContent = (
             "data-[placement=right]:slide-in-from-start-2",
             "data-[placement=top]:slide-in-from-bottom-2",
             "motion-reduce:animate-none!",
-            className
+            className,
           )}
           data-slot="select-content"
           {...rest}
@@ -155,8 +156,9 @@ export const SelectContent = (
   );
 };
 
-interface SelectGroupProps
-  extends React.ComponentProps<typeof ArkSelect.ItemGroup> {
+interface SelectGroupProps extends React.ComponentProps<
+  typeof ArkSelect.ItemGroup
+> {
   /**
    * The heading of the group
    */
@@ -176,7 +178,7 @@ export const SelectGroup = (props: SelectGroupProps) => {
 };
 
 export const SelectGroupLabel = (
-  props: React.ComponentProps<typeof ArkSelect.ItemGroupLabel>
+  props: React.ComponentProps<typeof ArkSelect.ItemGroupLabel>,
 ) => {
   const { className, ...rest } = props;
 
@@ -185,7 +187,7 @@ export const SelectGroupLabel = (
       className={cn(
         "px-2 py-1.5",
         "font-semibold text-muted-foreground text-xs",
-        className
+        className,
       )}
       data-slot="select-group-label"
       {...rest}
@@ -194,7 +196,7 @@ export const SelectGroupLabel = (
 };
 
 export const SelectItem = (
-  props: React.ComponentProps<typeof ArkSelect.Item>
+  props: React.ComponentProps<typeof ArkSelect.Item>,
 ) => {
   const { className, children, ...rest } = props;
 
@@ -214,7 +216,7 @@ export const SelectItem = (
         "data-disabled:pointer-events-none data-disabled:opacity-64",
         "[&_svg]:pointer-events-none [&_svg]:shrink-0",
         "[&_svg:not([class*='size-'])]:size-4 [&_svg]:text-muted-foreground",
-        className
+        className,
       )}
       data-slot="select-item"
       {...rest}
@@ -236,7 +238,7 @@ export const SelectItem = (
 };
 
 export const SelectClearTrigger = (
-  props: React.ComponentProps<typeof ArkSelect.ClearTrigger>
+  props: React.ComponentProps<typeof ArkSelect.ClearTrigger>,
 ) => {
   const { className, ...rest } = props;
 
@@ -250,7 +252,7 @@ export const SelectClearTrigger = (
         "outline-none focus-visible:opacity-100",
         "hover:opacity-100",
         "motion-reduce:transition-none!",
-        className
+        className,
       )}
       data-slot="select-clear-trigger"
       {...rest}
@@ -269,7 +271,7 @@ export const SelectEmpty = (props: React.ComponentProps<typeof ark.div>) => {
         className={cn(
           "px-2 py-1.5",
           "text-center text-muted-foreground text-sm",
-          className
+          className,
         )}
         role="presentation"
         {...rest}

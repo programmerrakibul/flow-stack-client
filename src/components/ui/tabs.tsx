@@ -1,9 +1,9 @@
 "use client";
 
+import { cn } from "@/utils/utils";
 import { Tabs as ArkTabs, useTabsContext } from "@ark-ui/react/tabs";
 import type React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "@/lib/utils";
 
 export const useTabs = useTabsContext;
 
@@ -15,7 +15,7 @@ export const Tabs = (props: React.ComponentProps<typeof ArkTabs.Root>) => {
       className={cn(
         "flex flex-col gap-2",
         "data-[orientation=vertical]:flex-row",
-        className
+        className,
       )}
       data-slot="tabs"
       lazyMount={lazyMount}
@@ -68,7 +68,8 @@ const tabsListVariants = tv({
   },
 });
 interface TabsListProps
-  extends React.ComponentProps<typeof ArkTabs.List>,
+  extends
+    React.ComponentProps<typeof ArkTabs.List>,
     VariantProps<typeof tabsListVariants> {}
 
 export const TabsList = (props: TabsListProps) => {
@@ -93,7 +94,7 @@ export const TabsList = (props: TabsListProps) => {
 };
 
 export const TabsTrigger = (
-  props: React.ComponentProps<typeof ArkTabs.Trigger>
+  props: React.ComponentProps<typeof ArkTabs.Trigger>,
 ) => {
   const { className, ...rest } = props;
 
@@ -115,7 +116,7 @@ export const TabsTrigger = (
         "data-disabled:pointer-events-none data-disabled:opacity-64",
         "[&_svg:not([class*='size-'])]:size-4.5 sm:[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:-mx-0.5 [&_svg]:shrink-0",
         "motion-reduce:transition-none!",
-        className
+        className,
       )}
       data-slot="tabs-trigger"
       {...rest}
@@ -124,7 +125,7 @@ export const TabsTrigger = (
 };
 
 export const TabsContent = (
-  props: React.ComponentProps<typeof ArkTabs.Content>
+  props: React.ComponentProps<typeof ArkTabs.Content>,
 ) => {
   const { className, ...rest } = props;
 

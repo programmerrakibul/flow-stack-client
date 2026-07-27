@@ -1,7 +1,7 @@
 "use client";
 
+import { cn } from "@/utils/utils";
 import { ark } from "@ark-ui/react/factory";
-import { cn } from "@/lib/utils";
 
 export const Skeleton = (props: React.ComponentProps<typeof ark.div>) => {
   const { className, ...rest } = props;
@@ -12,7 +12,7 @@ export const Skeleton = (props: React.ComponentProps<typeof ark.div>) => {
         "rounded-md bg-muted",
         "animate-pulse",
         "motion-reduce:animate-none!",
-        className
+        className,
       )}
       data-slot="skeleton"
       {...rest}
@@ -32,7 +32,7 @@ export const SkeletonCircle = (props: React.ComponentProps<typeof ark.div>) => {
         "rounded-full",
         "animate-pulse",
         "motion-reduce:animate-none!",
-        className
+        className,
       )}
       data-slot="skeleton-circle"
       {...rest}
@@ -60,7 +60,7 @@ export const SkeletonText = (props: SkeletonTextProps) => {
         "animate-pulse",
         "**:[div]:h-4",
         "motion-reduce:animate-none!",
-        className
+        className,
       )}
       data-slot="skeleton-text"
       {...rest}

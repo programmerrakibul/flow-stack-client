@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { cn } from "@/utils/utils";
 import { ark } from "@ark-ui/react/factory";
 import {
   FileUpload as ArkFileUpload,
@@ -7,13 +9,11 @@ import {
 } from "@ark-ui/react/file-upload";
 import { UploadIcon, XIcon } from "lucide-react";
 import type React from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 export const useFileUpload = useArkFileUploadContext;
 
 export const FileUpload = (
-  props: React.ComponentProps<typeof ArkFileUpload.Root>
+  props: React.ComponentProps<typeof ArkFileUpload.Root>,
 ) => {
   const { className, children, ...rest } = props;
 
@@ -23,7 +23,7 @@ export const FileUpload = (
         "group/file-upload",
         "relative",
         "flex flex-col justify-center gap-4",
-        className
+        className,
       )}
       data-slot="file-upload"
       {...rest}
@@ -36,11 +36,11 @@ export const FileUpload = (
 };
 
 export const FileUploadTrigger = (
-  props: React.ComponentProps<typeof ArkFileUpload.Trigger>
+  props: React.ComponentProps<typeof ArkFileUpload.Trigger>,
 ) => <ArkFileUpload.Trigger data-slot="file-upload-trigger" {...props} />;
 
 export const FileUploadDropzone = (
-  props: React.ComponentProps<typeof ArkFileUpload.Dropzone>
+  props: React.ComponentProps<typeof ArkFileUpload.Dropzone>,
 ) => {
   const { className, ...rest } = props;
 
@@ -56,7 +56,7 @@ export const FileUploadDropzone = (
         "data-cover:absolute data-cover:inset-0 data-cover:flex data-cover:items-center data-cover:justify-center",
         "data-dragging:border-primary data-dragging:bg-primary/10",
         "data-invalid:border-destructive dark:data-invalid:border-destructive-foreground",
-        className
+        className,
       )}
       data-slot="file-upload-dropzone"
       {...rest}
@@ -65,7 +65,7 @@ export const FileUploadDropzone = (
 };
 
 export const FileUploadDropzoneIcon = (
-  props: React.ComponentProps<typeof ark.div>
+  props: React.ComponentProps<typeof ark.div>,
 ) => {
   const { className, children, ...rest } = props;
 
@@ -78,7 +78,7 @@ export const FileUploadDropzoneIcon = (
         "rounded-full border",
         "group-data-dragging/file-upload:border-primary/24 group-data-dragging/file-upload:bg-primary/5 group-data-dragging/file-upload:text-primary",
         "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
-        className
+        className,
       )}
       data-slot="file-upload-dropzone-icon"
       {...rest}
@@ -89,7 +89,7 @@ export const FileUploadDropzoneIcon = (
 };
 
 export const FileUploadTitle = (
-  props: React.ComponentProps<typeof ark.div>
+  props: React.ComponentProps<typeof ark.div>,
 ) => {
   const { className, ...rest } = props;
 
@@ -103,7 +103,7 @@ export const FileUploadTitle = (
 };
 
 export const FileUploadDescription = (
-  props: React.ComponentProps<typeof ark.div>
+  props: React.ComponentProps<typeof ark.div>,
 ) => {
   const { className, ...rest } = props;
 
@@ -117,7 +117,7 @@ export const FileUploadDescription = (
 };
 
 export const FileUploadHelper = (
-  props: React.ComponentProps<typeof ark.div>
+  props: React.ComponentProps<typeof ark.div>,
 ) => {
   const { className, ...rest } = props;
 
@@ -131,11 +131,13 @@ export const FileUploadHelper = (
 };
 
 export const FileUploadItemGroup = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemGroup>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemGroup>,
 ) => <ArkFileUpload.ItemGroup data-slot="file-upload-item-group" {...props} />;
 
-interface FileUploadListProps
-  extends Omit<React.ComponentProps<typeof ArkFileUpload.Item>, "file"> {}
+interface FileUploadListProps extends Omit<
+  React.ComponentProps<typeof ArkFileUpload.Item>,
+  "file"
+> {}
 
 export const FileUploadList = (props: FileUploadListProps) => {
   const { className, ...rest } = props;
@@ -166,7 +168,7 @@ export const FileUploadList = (props: FileUploadListProps) => {
               "rounded-xl border",
               "fade-in-0 slide-in-from-top-5 animate-in",
               "motion-reduce:animate-none!",
-              className
+              className,
             )}
             file={file}
             key={key}
@@ -188,11 +190,22 @@ export const FileUploadList = (props: FileUploadListProps) => {
               <FileUploadItemSize />
             </div>
 
-            <FileUploadItemDeleteTrigger className="me-auto rtl:ms-auto" render={<Button className={cn(
-                                  "rounded-lg",
-                                  "hover:bg-destructive/10 hover:text-destructive",
-                                  "dark:hover:bg-destructive-foreground/10 dark:hover:text-destructive-foreground"
-                                )} size="icon-xs" variant="ghost" />}><XIcon /></FileUploadItemDeleteTrigger>
+            <FileUploadItemDeleteTrigger
+              className="me-auto rtl:ms-auto"
+              render={
+                <Button
+                  className={cn(
+                    "rounded-lg",
+                    "hover:bg-destructive/10 hover:text-destructive",
+                    "dark:hover:bg-destructive-foreground/10 dark:hover:text-destructive-foreground",
+                  )}
+                  size="icon-xs"
+                  variant="ghost"
+                />
+              }
+            >
+              <XIcon />
+            </FileUploadItemDeleteTrigger>
           </FileUploadItem>
         );
       })}
@@ -201,7 +214,7 @@ export const FileUploadList = (props: FileUploadListProps) => {
 };
 
 export const FileUploadItem = (
-  props: React.ComponentProps<typeof ArkFileUpload.Item>
+  props: React.ComponentProps<typeof ArkFileUpload.Item>,
 ) => {
   const { className, ...rest } = props;
 
@@ -215,7 +228,7 @@ export const FileUploadItem = (
 };
 
 export const FileUploadItemPreview = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemPreview>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemPreview>,
 ) => {
   const { className, ...rest } = props;
 
@@ -227,7 +240,7 @@ export const FileUploadItemPreview = (
         "bg-primary/10",
         "select-none",
         "rounded-full",
-        className
+        className,
       )}
       data-slot="file-upload-item-preview"
       {...rest}
@@ -236,7 +249,7 @@ export const FileUploadItemPreview = (
 };
 
 export const FileUploadItemPreviewImage = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemPreviewImage>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemPreviewImage>,
 ) => {
   const { className, ...rest } = props;
 
@@ -246,7 +259,7 @@ export const FileUploadItemPreviewImage = (
         "aspect-square size-full",
         "object-cover",
         "rounded-lg",
-        className
+        className,
       )}
       data-slot="file-upload-item-preview-image"
       {...rest}
@@ -255,7 +268,7 @@ export const FileUploadItemPreviewImage = (
 };
 
 export const FileUploadItemName = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemName>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemName>,
 ) => {
   const { className, ...rest } = props;
 
@@ -265,7 +278,7 @@ export const FileUploadItemName = (
         "truncate font-medium text-xs",
         "min-w-0",
         "overflow-hidden",
-        className
+        className,
       )}
       data-slot="file-upload-item-name"
       {...rest}
@@ -274,7 +287,7 @@ export const FileUploadItemName = (
 };
 
 export const FileUploadItemSize = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemSizeText>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemSizeText>,
 ) => {
   const { className, ...rest } = props;
 
@@ -288,7 +301,7 @@ export const FileUploadItemSize = (
 };
 
 export const FileUploadItemDeleteTrigger = (
-  props: React.ComponentProps<typeof ArkFileUpload.ItemDeleteTrigger>
+  props: React.ComponentProps<typeof ArkFileUpload.ItemDeleteTrigger>,
 ) => (
   <ArkFileUpload.ItemDeleteTrigger
     data-slot="file-upload-item-delete-trigger"
@@ -297,7 +310,7 @@ export const FileUploadItemDeleteTrigger = (
 );
 
 export const FileUploadClearTrigger = (
-  props: React.ComponentProps<typeof ArkFileUpload.ClearTrigger>
+  props: React.ComponentProps<typeof ArkFileUpload.ClearTrigger>,
 ) => (
   <ArkFileUpload.ClearTrigger
     data-slot="file-upload-clear-trigger"
@@ -306,7 +319,7 @@ export const FileUploadClearTrigger = (
 );
 
 export const FileUploadRootProvider = (
-  props: React.ComponentProps<typeof ArkFileUpload.RootProvider>
+  props: React.ComponentProps<typeof ArkFileUpload.RootProvider>,
 ) => (
   <ArkFileUpload.RootProvider
     data-slot="file-upload-root-provider"
