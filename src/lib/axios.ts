@@ -1,9 +1,9 @@
-import axios from "axios";
 import localStorageUtils from "@/utils/local-storage";
+import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  // withCredentials: true,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -11,9 +11,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorageUtils.getItem(localStorageUtils.AUTH_TOKEN_KEY);
-
-    console.log({ token });
+    const token = localStorageUtils.getAuthToken();
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

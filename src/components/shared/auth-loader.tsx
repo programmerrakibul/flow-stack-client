@@ -1,9 +1,8 @@
+import { fetchProfile, useAuthStore } from "@/stores/auth-store";
 import { useEffect } from "react";
-import { fetchProfile } from "@/utils/auth-actions";
-import { useAuth } from "@/hooks/use-auth";
 
 const AuthLoader = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading } = useAuth();
+  const { isLoading } = useAuthStore();
 
   useEffect(() => {
     fetchProfile();

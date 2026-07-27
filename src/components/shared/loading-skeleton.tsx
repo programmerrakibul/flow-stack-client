@@ -1,5 +1,5 @@
-import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface LoadingSkeletonProps {
   variant?: "card" | "table" | "stats";
@@ -53,7 +53,8 @@ const CardSkeleton = ({ rows = 3 }: { rows?: number }) => (
       <Card key={i}>
         <CardHeader>
           <Skeleton className="h-5 w-48" />
-          <SkeletonText lines={2} />
+          <Skeleton className="h-3 w-40" />
+          <Skeleton className="h-3 w-36" />
         </CardHeader>
         <CardContent>
           <Skeleton className="h-4 w-32" />

@@ -40,6 +40,8 @@ const removeItem = (key: string): void => {
   }
 };
 
+const getAuthToken = () => getItem(AUTH_TOKEN_KEY, null);
+
 const setAuthToken = (token: string) => setItem(AUTH_TOKEN_KEY, token);
 
 const removeAuthToken = () => removeItem(AUTH_TOKEN_KEY);
@@ -49,6 +51,7 @@ const localStorageUtils = {
   getItem,
   removeItem,
   AUTH_TOKEN_KEY,
+  getAuthToken,
   setAuthToken,
   removeAuthToken,
 };

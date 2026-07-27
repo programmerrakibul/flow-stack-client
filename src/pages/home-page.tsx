@@ -1,22 +1,20 @@
-import { Link } from "react-router";
-import { Button } from "@/components/ui/button";
 import Container from "@/components/shared/container";
-import { useAuth } from "@/hooks/use-auth";
-import { Zap, ListTodo, Shield, BarChart3 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuthStore } from "@/stores/auth-store";
+import { BarChart3, ListTodo, Shield, Zap } from "lucide-react";
+import { Link } from "react-router";
 
 const HomePage = () => {
-  const { user, isAuthenticated } = useAuth();
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const isLoading = useAuthStore((s) => s.isLoading);
 
-  const getStartedPath = isAuthenticated
-    ? user?.role === "ADMIN"
-      ? "/admin/dashboard"
-      : "/dashboard/overview"
-    : "/sign-up";
+  const getStartedPath =
+    !isLoading && isAuthenticated ? "/dashboard" : "/sign-up";
 
   return (
     <div className="flex flex-col">
       <section className="relative flex min-h-[calc(100vh-8rem)] items-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
+        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-primary/10" />
         <Container className="relative z-10">
           <div className="mx-auto max-w-3xl text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-none border border-primary/20 bg-primary/5 px-4 py-2 text-sm text-primary">
@@ -27,17 +25,17 @@ const HomePage = () => {
               Flow Stack
             </h1>
             <p className="mt-6 text-lg text-muted-foreground">
-              A modern task management platform. Organize your work,
-              track progress, and stay productive with your team.
+              A modern task management platform. Organize your work, track
+              progress, and stay productive with your team.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-              <Button asChild size="lg">
+              <Button size="lg">
                 <Link to={getStartedPath}>
                   {isAuthenticated ? "Go to Dashboard" : "Get Started"}
                 </Link>
               </Button>
               {!isAuthenticated && (
-                <Button asChild variant="outline" size="lg">
+                <Button variant="outline" size="lg">
                   <Link to="/sign-in">Sign In</Link>
                 </Button>
               )}

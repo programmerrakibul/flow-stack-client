@@ -39,7 +39,7 @@ export const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               {
-                path: "overview",
+                index: true,
                 element: <UserOverviewPage />,
               },
               {
@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
             element: <DashboardLayout />,
             children: [
               {
-                path: "dashboard",
+                index: true,
                 element: <AdminOverviewPage />,
               },
               {

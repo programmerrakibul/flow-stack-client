@@ -1,6 +1,6 @@
-import type { TSignInPayload, TSignUpPayload } from "@/types/api-types";
 import api from "@/lib/axios";
 import type { TResponse } from "@/types/api";
+import type { TSignInPayload, TSignUpPayload } from "@/types/api-types";
 import type { TUser } from "@/types/user";
 
 export const authService = {
@@ -25,7 +25,7 @@ export const authService = {
   },
 
   getProfile: async () => {
-    const { data } = await api.get<TResponse>("/auth/profile");
+    const { data } = await api.get<TResponse<TUser>>("/auth/profile");
     return data;
   },
 };

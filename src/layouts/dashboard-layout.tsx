@@ -1,9 +1,8 @@
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/hooks/use-auth";
-import type { Role } from "@/types/user";
-import { signOut } from "@/utils/auth-actions";
+import { signOut, useAuthStore } from "@/stores/auth-store";
+import { Role } from "@/types/user";
 import { cn } from "@/utils/utils";
 import {
   BarChart3,
@@ -17,7 +16,7 @@ import {
   Zap,
 } from "lucide-react";
 import { useState } from "react";
-import { Link, Outlet, useLocation } from "react-router";
+import { Link, Navigate, Outlet, useLocation } from "react-router";
 
 interface NavItem {
   label: string;
@@ -27,27 +26,29 @@ interface NavItem {
 }
 
 const userNavItems: NavItem[] = [
-  { label: "Overview", href: "/dashboard/overview", icon: BarChart3 },
+  { label: "Overview", href: "/dashboard", icon: BarChart3 },
   { label: "Add Task", href: "/dashboard/add-task", icon: PlusCircle },
   { label: "My Tasks", href: "/dashboard/my-tasks", icon: ListTodo },
   { label: "Profile", href: "/dashboard/profile", icon: User },
 ];
 
 const adminNavItems: NavItem[] = [
-  { label: "Overview", href: "/admin/dashboard", icon: BarChart3 },
+  { label: "Overview", href: "/admin", icon: BarChart3 },
   { label: "All Tasks", href: "/admin/all-tasks", icon: ListTodo },
   { label: "All Users", href: "/admin/all-users", icon: Users },
   { label: "Profile", href: "/admin/profile", icon: User },
 ];
 
 const DashboardLayout = () => {
-  const { user } = useAuth();
+  const data = useAuthStore();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const isAdmin = user?.role === "ADMIN";
+  if (data.isLoading) return null;
+  if (!data.isAuthenticated) return <Navigate to="/sign-in" replace />;
+
+  const isAdmin = data.user.role === Role.ADMIN;
   const navItems = isAdmin ? adminNavItems : userNavItems;
-  const prefix = isAdmin ? "/admin" : "/dashboard";
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -60,7 +61,7 @@ const DashboardLayout = () => {
         <div className="flex h-full flex-col">
           <div className="flex h-16 items-center justify-between px-4">
             <Link
-              to={prefix}
+              to={"/"}
               className="flex items-center gap-2 font-heading text-lg font-bold"
             >
               <Zap className="h-5 w-5 text-primary" />
@@ -104,7 +105,9 @@ const DashboardLayout = () => {
           <div className="border-t border-border p-3">
             <div className="flex items-center gap-2 px-3 py-2">
               {isAdmin && <Shield className="size-4 text-purple-500" />}
-              <span className="text-sm font-medium truncate">{user?.name}</span>
+              <span className="text-sm font-medium truncate">
+                {data.user?.name}
+              </span>
             </div>
             <Button
               variant="ghost"

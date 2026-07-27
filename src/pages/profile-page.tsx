@@ -1,12 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/hooks/use-auth";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROLE_CONFIG } from "@/constants/enums";
+import { useAuthStore } from "@/stores/auth-store";
+import { Navigate } from "react-router";
 
 const ProfilePage = () => {
-  const { user } = useAuth();
+  const data = useAuthStore();
 
-  if (!user) return null;
+  if (!data.isAuthenticated) return <Navigate to="/sign-in" replace />;
+
+  const user = data.user;
 
   const roleConfig = ROLE_CONFIG[user.role];
   const RoleIcon = roleConfig.icon;
@@ -50,19 +53,25 @@ const ProfilePage = () => {
               </Badge>
             </div>
             <div className="flex items-center justify-between border-b pb-3">
-              <span className="text-sm text-muted-foreground">Email Verified</span>
+              <span className="text-sm text-muted-foreground">
+                Email Verified
+              </span>
               <Badge variant={user.emailVerified ? "default" : "secondary"}>
                 {user.emailVerified ? "Verified" : "Not Verified"}
               </Badge>
             </div>
             <div className="flex items-center justify-between border-b pb-3">
-              <span className="text-sm text-muted-foreground">Account Status</span>
+              <span className="text-sm text-muted-foreground">
+                Account Status
+              </span>
               <Badge variant={user.isActive ? "default" : "destructive"}>
                 {user.isActive ? "Active" : "Inactive"}
               </Badge>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Member Since</span>
+              <span className="text-sm text-muted-foreground">
+                Member Since
+              </span>
               <span className="text-sm">
                 {new Date(user.createdAt).toLocaleDateString()}
               </span>

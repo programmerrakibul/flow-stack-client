@@ -32,7 +32,7 @@ const SignInPage = () => {
   const onSubmit = async (data: SignInFormData) => {
     try {
       await signIn(data);
-      navigate("/dashboard/overview", { replace: true });
+      navigate("/dashboard", { replace: true });
 
       toast.create({
         title: "Welcome back!",

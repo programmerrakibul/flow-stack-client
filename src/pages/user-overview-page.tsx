@@ -1,26 +1,34 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import LoadingSkeleton from "@/components/shared/loading-skeleton";
 import ErrorState from "@/components/shared/error-state";
+import LoadingSkeleton from "@/components/shared/loading-skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
 import { useUserDashboard } from "@/hooks/use-dashboard-queries";
-import { useAuth } from "@/hooks/use-auth";
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/constants/enums";
+import { useAuthStore } from "@/stores/auth-store";
+import type { TUserDashboard } from "@/types/api-types";
+import type { Priority, Status } from "@/types/task";
 import { ListTodo } from "lucide-react";
+import { Navigate } from "react-router";
 
 const UserOverviewPage = () => {
-  const { user } = useAuth();
-  const { data, isLoading, error, refetch } = useUserDashboard();
+  const authData = useAuthStore();
+  const { data = {}, isLoading, error, refetch } = useUserDashboard();
 
   if (isLoading) return <LoadingSkeleton variant="stats" />;
+
+  if (!authData.isAuthenticated) return <Navigate to="/sign-in" replace />;
+
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data?.data;
+  const dashboard = data?.data as TUserDashboard;
+
+  console.log(dashboard);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">
-          Welcome back, {user?.name}!
+          Welcome back, {authData.user?.name}!
         </h1>
         <p className="text-sm text-muted-foreground">
           Here&apos;s an overview of your tasks.
@@ -34,51 +42,55 @@ const UserOverviewPage = () => {
             <ListTodo className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboard?.totalTasks ?? 0}</div>
+            <div className="text-2xl font-bold">
+              {dashboard?.totalTasks ?? 0}
+            </div>
           </CardContent>
         </Card>
 
-        {dashboard?.tasksByStatus.map((item) => {
-          const config = STATUS_CONFIG[item.status];
+        {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
+          const config = STATUS_CONFIG[key as Status];
           const Icon = config.icon;
+
           return (
-            <Card key={item.status}>
+            <Card key={key}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{config.label}</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {config.label}
+                </CardTitle>
                 <Icon className={`size-4 ${config.color}`} />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{item.count}</div>
+                <div className="text-2xl font-bold">{String(value)}</div>
               </CardContent>
             </Card>
           );
         })}
       </div>
 
-      {dashboard?.tasksByPriority && dashboard.tasksByPriority.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Tasks by Priority</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-4">
-              {dashboard.tasksByPriority.map((item) => {
-                const config = PRIORITY_CONFIG[item.priority];
-                const Icon = config.icon;
-                return (
-                  <div key={item.priority} className="flex items-center gap-2">
-                    <Icon className={`size-4 ${config.color}`} />
-                    <span className="text-sm">{config.label}:</span>
-                    <Badge variant={config.badgeVariant}>{item.count}</Badge>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Tasks by Priority</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            {Object.entries(dashboard.tasksByPriority).map(([key, value]) => {
+              const config = PRIORITY_CONFIG[key as Priority];
+              const Icon = config.icon;
 
-      {dashboard?.recentActivity && dashboard.recentActivity.length > 0 && (
+              return (
+                <div key={key} className="flex items-center gap-2">
+                  <Icon className={`size-4 ${config.color}`} />
+                  <span className="text-sm">{config.label}:</span>
+                  <Badge variant={config.badgeVariant}>{String(value)}</Badge>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      { dashboard.recentActivity.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -87,6 +99,7 @@ const UserOverviewPage = () => {
             <div className="space-y-3">
               {dashboard.recentActivity.map((task) => {
                 const statusConf = STATUS_CONFIG[task.status];
+                
                 return (
                   <div
                     key={task.id}

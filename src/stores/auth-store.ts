@@ -105,6 +105,37 @@ export const signOut = async () => {
   });
 };
 
+export const fetchProfile = async () => {
+  setAuthLoading(true);
+
+  try {
+    const token = localStorageUtils.getAuthToken();
+
+    if (!token) {
+      setUser();
+      return;
+    }
+
+    const data = await authService.getProfile();
+    if (data.success) {
+      setUser({
+        user: data.data as TUser,
+        token,
+      });
+
+      return;
+    }
+
+    localStorageUtils.removeAuthToken();
+    setUser();
+  } catch {
+    setUser();
+    localStorageUtils.removeAuthToken();
+  } finally {
+    setAuthLoading(false);
+  }
+};
+
 const authStore = {
   useAuthStore,
   signIn,

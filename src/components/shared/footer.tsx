@@ -1,12 +1,7 @@
 import Container from "@/components/shared/container";
 import { Zap } from "lucide-react";
-import { useLocation } from "react-router";
 
 const Footer = () => {
-  const location = useLocation();
-
-  if (location.pathname.includes("/dashboard")) return null;
-
   return (
     <footer className="border-t border-border bg-background">
       <Container>

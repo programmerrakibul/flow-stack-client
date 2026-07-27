@@ -55,7 +55,7 @@ const SignUpPage = () => {
         image: imageUrl,
       });
 
-      navigate("/dashboard/overview", { replace: true });
+      navigate("/dashboard", { replace: true });
 
       toast.create({
         title: "Welcome!",

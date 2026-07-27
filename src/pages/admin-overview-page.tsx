@@ -1,34 +1,33 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import LoadingSkeleton from "@/components/shared/loading-skeleton";
 import ErrorState from "@/components/shared/error-state";
-import { useAdminDashboard } from "@/hooks/use-dashboard-queries";
-import { useAuth } from "@/hooks/use-auth";
+import LoadingSkeleton from "@/components/shared/loading-skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STATUS_CONFIG } from "@/constants/enums";
-import {
-  Users,
-  ListTodo,
-  UserCheck,
-  Activity,
-} from "lucide-react";
+import { useAdminDashboard } from "@/hooks/use-dashboard-queries";
+import { useAuthStore } from "@/stores/auth-store";
+import type { TAdminDashboard } from "@/types/api-types";
+import { Activity, ListTodo, UserCheck, Users } from "lucide-react";
+import { Navigate } from "react-router";
 
 const AdminOverviewPage = () => {
-  const { user } = useAuth();
+  const authData = useAuthStore();
   const { data, isLoading, error, refetch } = useAdminDashboard();
 
-  if (isLoading) return <LoadingSkeleton variant="stats" />;
+  if (authData.isLoading || isLoading)
+    return <LoadingSkeleton variant="stats" />;
+
+  if (!authData.isAuthenticated) return <Navigate to="/sign-in" replace />;
+
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data?.data;
+  const dashboard = data?.data as TAdminDashboard;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-bold">
-          Admin Dashboard
-        </h1>
+        <h1 className="font-heading text-2xl font-bold">Admin Dashboard</h1>
         <p className="text-sm text-muted-foreground">
-          Welcome, {user?.name}. Here&apos;s the platform overview.
+          Welcome, {authData.user?.name}. Here&apos;s the platform overview.
         </p>
       </div>
 
@@ -39,7 +38,9 @@ const AdminOverviewPage = () => {
             <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboard?.totalUsers ?? 0}</div>
+            <div className="text-2xl font-bold">
+              {dashboard?.totalUsers ?? 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -49,7 +50,9 @@ const AdminOverviewPage = () => {
             <UserCheck className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboard?.activeUsers ?? 0}</div>
+            <div className="text-2xl font-bold">
+              {dashboard?.activeUsers ?? 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -59,7 +62,9 @@ const AdminOverviewPage = () => {
             <ListTodo className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboard?.totalTasks ?? 0}</div>
+            <div className="text-2xl font-bold">
+              {dashboard?.totalTasks ?? 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -70,7 +75,8 @@ const AdminOverviewPage = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {dashboard?.tasksByStatus?.find((s) => s.status === "IN_PROGRESS")?.count ?? 0}
+              {dashboard?.tasksByStatus?.find((s) => s.status === "IN_PROGRESS")
+                ?.count ?? 0}
             </div>
           </CardContent>
         </Card>
@@ -125,7 +131,9 @@ const AdminOverviewPage = () => {
                     )}
                     <div>
                       <p className="font-medium text-sm">{item.user.name}</p>
-                      <p className="text-xs text-muted-foreground">{item.user.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.user.email}
+                      </p>
                     </div>
                   </div>
                   <Badge variant="secondary">{item.taskCount} tasks</Badge>

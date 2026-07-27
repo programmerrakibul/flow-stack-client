@@ -1,17 +1,17 @@
-import { Navigate, Outlet, useLocation } from "react-router";
-import { useAuth } from "@/hooks/use-auth";
 import { Spinner } from "@/components/ui/spinner";
-import type { Role } from "@/types/user";
+import { useAuthStore } from "@/stores/auth-store";
+import { Role } from "@/types/user";
+import { Navigate, Outlet, useLocation } from "react-router";
 
 interface ProtectedRouteProps {
-  allowedRoles?: Role[];
+  allowedRoles: Role[];
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const data = useAuthStore();
   const location = useLocation();
 
-  if (isLoading) {
+  if (data.isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <Spinner className="size-8" />
@@ -19,12 +19,17 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/sign-in" state={{ from: location.pathname }} replace />;
+  if (!data.isAuthenticated) {
+    return (
+      <Navigate to="/sign-in" state={{ from: location.pathname }} replace />
+    );
   }
 
-  if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-    const redirectPath = user.role === "ADMIN" ? "/admin/dashboard" : "/dashboard/overview";
+  const user = data.user;
+  const isAdmin = user.role === Role.ADMIN;
+
+  if (!allowedRoles.includes(user.role)) {
+    const redirectPath = isAdmin ? "/admin" : "/dashboard";
     return <Navigate to={redirectPath} replace />;
   }
 
