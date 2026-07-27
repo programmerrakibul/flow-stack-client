@@ -1,11 +1,11 @@
 "use client";
 
+import { cn } from "@/utils/utils";
 import { Field as ArkField } from "@ark-ui/react/field";
 import type React from "react";
-import { cn } from "@/lib/utils";
 
 export const Textarea = (
-  props: React.ComponentProps<typeof ArkField.Textarea>
+  props: React.ComponentProps<typeof ArkField.Textarea>,
 ) => {
   const { className, ...rest } = props;
 
@@ -27,7 +27,7 @@ export const Textarea = (
         "dark:data-invalid:border-destructive-foreground dark:data-invalid:text-destructive-foreground dark:data-invalid:ring-destructive-foreground/40",
         "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-64",
         "motion-reduce:transition-none!",
-        className
+        className,
       )}
       data-slot="textarea"
       {...rest}

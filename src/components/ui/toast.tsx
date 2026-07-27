@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/utils/utils";
 import { Portal } from "@ark-ui/react/portal";
 import {
   Toast as ArkToast,
@@ -15,9 +18,6 @@ import {
   XIcon,
 } from "lucide-react";
 import type React from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 
 export const useToast = useToastContext;
 
@@ -27,11 +27,10 @@ export const toast = createToaster({
   max: 3,
 });
 
-interface ToasterProps
-  extends Omit<
-    React.ComponentProps<typeof ArkToaster>,
-    "toaster" | "children"
-  > {
+interface ToasterProps extends Omit<
+  React.ComponentProps<typeof ArkToaster>,
+  "toaster" | "children"
+> {
   /**
    * Toaster instance
    */
@@ -48,7 +47,7 @@ export const Toaster = (props: ToasterProps) => {
           "w-[calc(100%-var(--viewport-offset-left))] sm:w-(--width)",
           "data-[align=center]:left-[calc(var(--viewport-offset-right)/2)]!",
           "sm:data-[align=center]:w-full",
-          className
+          className,
         )}
         style={{ "--width": "356px", ...style } as React.CSSProperties}
         toaster={toasterInstance}
@@ -102,7 +101,7 @@ export const ToastItem = (props: ToastItemProps) => {
         "data-[state=closed]:duration-[300ms,300ms,150ms]",
         "data-[state=closed]:ease-[cubic-bezier(0.06,0.71,0.55,1)]",
         "motion-reduce:transition-none!",
-        className
+        className,
       )}
       data-slot="toast"
       {...rest}
@@ -114,7 +113,7 @@ export const ToastItem = (props: ToastItemProps) => {
             "in-data-[type=success]:text-success",
             "in-data-[type=error]:text-destructive",
             "in-data-[type=info]:text-info",
-            "[&_svg]:pointer-events-none [&_svg]:h-lh [&_svg]:w-4 [&_svg]:shrink-0"
+            "[&_svg]:pointer-events-none [&_svg]:h-lh [&_svg]:w-4 [&_svg]:shrink-0",
           )}
           data-slot="toast-icon"
         >
@@ -142,11 +141,29 @@ export const ToastItem = (props: ToastItemProps) => {
 
       <div className="flex items-center gap-2">
         {toastData.action && (
-          <ArkToast.ActionTrigger data-slot="toast-action-trigger" onClick={toastData.action.onClick} render={<Button size="sm" variant="secondary" />}>{toastData.action.label}</ArkToast.ActionTrigger>
+          <ArkToast.ActionTrigger
+            data-slot="toast-action-trigger"
+            onClick={toastData.action.onClick}
+            render={<Button size="sm" variant="secondary" />}
+          >
+            {toastData.action.label}
+          </ArkToast.ActionTrigger>
         )}
 
         {!isExplicitClosable && (
-          <ArkToast.CloseTrigger data-slot="toast-close-trigger" render={<Button aria-label="Close" className="opacity-64 hover:opacity-100" size="icon-xs" variant="ghost" />}><XIcon /></ArkToast.CloseTrigger>
+          <ArkToast.CloseTrigger
+            data-slot="toast-close-trigger"
+            render={
+              <Button
+                aria-label="Close"
+                className="opacity-64 hover:opacity-100"
+                size="icon-xs"
+                variant="ghost"
+              />
+            }
+          >
+            <XIcon />
+          </ArkToast.CloseTrigger>
         )}
       </div>
     </ArkToast.Root>

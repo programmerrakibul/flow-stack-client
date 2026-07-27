@@ -1,12 +1,12 @@
 "use client";
 
-import { ark } from "@ark-ui/react/factory";
-import type React from "react";
-import { tv, type VariantProps } from "tailwind-variants";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/utils/utils";
+import { ark } from "@ark-ui/react/factory";
+import type React from "react";
+import { tv, type VariantProps } from "tailwind-variants";
 
 const inpuGroupVariants = tv({
   base: [
@@ -40,7 +40,8 @@ const inpuGroupVariants = tv({
 });
 
 export interface InputGroupProps
-  extends React.ComponentProps<typeof ark.div>,
+  extends
+    React.ComponentProps<typeof ark.div>,
     VariantProps<typeof inpuGroupVariants> {}
 
 export const InputGroup = (props: InputGroupProps) => {
@@ -98,7 +99,8 @@ const inputGroupAddonVariants = tv({
 });
 
 interface InputGroupAddonProps
-  extends React.ComponentProps<typeof ark.div>,
+  extends
+    React.ComponentProps<typeof ark.div>,
     VariantProps<typeof inputGroupAddonVariants> {}
 
 export const InputGroupAddon = (props: InputGroupAddonProps) => {
@@ -155,7 +157,8 @@ const inputGroupButtonVariants = tv({
 });
 
 interface InputGroupButtonProps
-  extends Omit<React.ComponentProps<typeof Button>, "size">,
+  extends
+    Omit<React.ComponentProps<typeof Button>, "size">,
     VariantProps<typeof inputGroupButtonVariants> {}
 
 export const InputGroupButton = (props: InputGroupButtonProps) => {
@@ -180,7 +183,7 @@ export const InputGroupButton = (props: InputGroupButtonProps) => {
 };
 
 export const InputGroupText = (
-  props: React.ComponentProps<typeof ark.span>
+  props: React.ComponentProps<typeof ark.span>,
 ) => {
   const { className, ...rest } = props;
 
@@ -190,7 +193,7 @@ export const InputGroupText = (
         "flex items-center gap-2",
         "text-muted-foreground text-sm",
         "[&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none",
-        className
+        className,
       )}
       data-slot="input-group-text"
       {...rest}
@@ -210,7 +213,7 @@ export const InputGroupInput = (props: React.ComponentProps<typeof Input>) => {
         "focus-visible:ring-0",
         "disabled:bg-transparent aria-invalid:ring-0 data-invalid:ring-0",
         "dark:bg-transparent dark:disabled:bg-transparent",
-        className
+        className,
       )}
       data-slot="input-group-control"
       {...rest}
@@ -219,7 +222,7 @@ export const InputGroupInput = (props: React.ComponentProps<typeof Input>) => {
 };
 
 export const InputGroupTextarea = (
-  props: React.ComponentProps<typeof Textarea>
+  props: React.ComponentProps<typeof Textarea>,
 ) => {
   const { className, ...rest } = props;
 
@@ -233,7 +236,7 @@ export const InputGroupTextarea = (
         "focus-visible:ring-0",
         "disabled:bg-transparent aria-invalid:ring-0 data-invalid:ring-0",
         "dark:bg-transparent dark:disabled:bg-transparent",
-        className
+        className,
       )}
       data-slot="input-group-control"
       {...rest}
