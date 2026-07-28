@@ -44,7 +44,7 @@ const FileUpload = ({
         <img
           src={preview}
           alt="Preview"
-          className="h-24 w-24 rounded-full object-cover border-2 border-border"
+          className="h-24 w-24 rounded-full object-cover border-2 border-border mx-auto"
         />
         <Button
           type="button"
@@ -74,7 +74,7 @@ const FileUpload = ({
         variant="outline"
         size="sm"
         onClick={() => inputRef.current?.click()}
-        className="gap-2"
+        className="gap-2 w-full"
       >
         <Upload className="size-4" />
         Choose image

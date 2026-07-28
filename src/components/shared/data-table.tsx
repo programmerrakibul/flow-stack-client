@@ -119,7 +119,7 @@ function DataTable<T extends object>({
       )}
 
       {pagination && totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 bg-muted/30 rounded-lg border border-border">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 bg-muted/30 border border-border">
           <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left order-2 sm:order-1">
             <div className="hidden sm:block">
               Page {currentPage} of {totalPages} &bull; Showing{" "}

@@ -43,13 +43,14 @@ const SignUpPage = () => {
       let imageUrl = data.image || undefined;
 
       if (data.image && data.image.startsWith("blob:")) {
-        toast.loading("Uploading image...");
         const response = await fetch(data.image);
         const blob = await response.blob();
         const file = new File([blob], "profile.jpg", { type: blob.type });
         imageUrl = await uploadImage(file, setUploadProgress);
         setUploadProgress(null);
       }
+
+      console.log({imageUrl});
 
       await signUp({
         name: data.name,
@@ -71,7 +72,7 @@ const SignUpPage = () => {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-14 md:py-18">
       <Container className="max-w-sm space-y-6">
         <div className="text-center">
           <Link
@@ -87,6 +88,31 @@ const SignUpPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Controller
+            control={control}
+            name="image"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="sign-up-image">
+                  Profile Image (optional)
+                </FieldLabel>
+                <FileUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  className="w-full"
+                />
+                {uploadProgress !== null && (
+                  <p className="text-xs text-muted-foreground">
+                    Uploading: {uploadProgress}%
+                  </p>
+                )}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
           <Controller
             control={control}
             name="name"
@@ -166,30 +192,6 @@ const SignUpPage = () => {
                   placeholder="Re-enter your password"
                   autoComplete="new-password"
                 />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="image"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-image">
-                  Profile Image (optional)
-                </FieldLabel>
-                <FileUpload
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-                {uploadProgress !== null && (
-                  <p className="text-xs text-muted-foreground">
-                    Uploading: {uploadProgress}%
-                  </p>
-                )}
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

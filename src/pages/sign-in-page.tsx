@@ -52,7 +52,7 @@ const SignInPage = () => {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-14 md:py-18">
       <Container className="max-w-sm space-y-6">
         <div className="text-center">
           <Link
