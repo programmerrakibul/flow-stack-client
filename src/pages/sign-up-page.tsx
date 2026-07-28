@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import { uploadImage } from "@/lib/upload-image";
-import { signUp } from "@/stores/auth-store";
+import { signUp, useAuthStore } from "@/stores/auth-store";
 import { signUpSchema, type SignUpFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Zap } from "lucide-react";
@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const {
     control,
@@ -31,6 +32,10 @@ const SignUpPage = () => {
       image: "",
     },
   });
+
+  if (isAuthenticated) {
+    navigate("/", { replace: true });
+  }
 
   const onSubmit = async (data: SignUpFormData) => {
     try {
@@ -55,13 +60,12 @@ const SignUpPage = () => {
         image: imageUrl,
       });
 
-      navigate("/dashboard", { replace: true });
-
       toast.create({
         title: "Welcome!",
         description: "Your account has been created successfully.",
         type: "success",
       });
+      navigate("/dashboard", { replace: true });
     } catch {
       setUploadProgress(null);
       toast.create({

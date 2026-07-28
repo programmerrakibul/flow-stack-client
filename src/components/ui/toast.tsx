@@ -19,10 +19,12 @@ import {
 } from "lucide-react";
 import type React from "react";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useToast = useToastContext;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const toast = createToaster({
-  placement: "bottom-end",
+  placement: "top-end",
   overlap: true,
   max: 3,
 });

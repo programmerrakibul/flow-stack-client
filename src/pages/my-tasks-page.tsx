@@ -1,25 +1,26 @@
-import { useMemo } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
+import DataTable from "@/components/shared/data-table";
+import ErrorState from "@/components/shared/error-state";
+import LoadingSkeleton from "@/components/shared/loading-skeleton";
+import SearchInput from "@/components/shared/search-input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import DataTable from "@/components/shared/data-table";
-import SearchInput from "@/components/shared/search-input";
-import LoadingSkeleton from "@/components/shared/loading-skeleton";
-import ErrorState from "@/components/shared/error-state";
-import { useTasks, useDeleteTask, useUpdateTaskStatus } from "@/hooks/use-task-queries";
-import { useTaskFilterStore } from "@/stores/task-filter-store";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Status, Priority } from "@/types/task";
-import { STATUS_CONFIG, PRIORITY_CONFIG } from "@/constants/enums";
-import { Trash2, MoreHorizontal, ArrowUpDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useDeleteTask, useTasks, useUpdateTaskStatus } from "@/hooks/use-task";
+import { useTaskFilterStore } from "@/stores/task-filter-store";
+import { Priority, Status } from "@/types/task";
+import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
+import { useMemo } from "react";
+
 const MyTasksPage = () => {
   const isMobile = useIsMobile();
   const {
@@ -44,7 +45,7 @@ const MyTasksPage = () => {
       sortBy: "createdAt" as const,
       sortOrder: "desc" as const,
     }),
-    [page, limit, search, status, priority]
+    [page, limit, search, status, priority],
   );
 
   const { data, isLoading, error, refetch } = useTasks(queryParams);
@@ -55,7 +56,10 @@ const MyTasksPage = () => {
     await updateStatus.mutateAsync({ id: taskId, status: newStatus });
   };
 
-  const columns: ColumnDef<(typeof data extends { data?: (infer T)[] } ? T : never)[], unknown>[] = [
+  const columns: ColumnDef<
+    (typeof data extends { data?: (infer T)[] } ? T : never)[],
+    unknown
+  >[] = [
     {
       accessorKey: "title",
       header: ({ column }) => (
@@ -123,7 +127,9 @@ const MyTasksPage = () => {
                 <DropdownMenuItem
                   key={s}
                   onClick={() => handleStatusChange(task.id, s)}
-                  disabled={task.status === s || task.status === Status.COMPLETED}
+                  disabled={
+                    task.status === s || task.status === Status.COMPLETED
+                  }
                 >
                   Mark as {STATUS_CONFIG[s].label}
                 </DropdownMenuItem>
@@ -165,7 +171,10 @@ const MyTasksPage = () => {
             placeholder="Search tasks..."
           />
           <div className="flex gap-2">
-            <Tabs value={status} onValueChange={(v) => setStatus(v as Status | "ALL")}>
+            <Tabs
+              value={status}
+              onValueChange={(v) => setStatus(v.value as Status | "ALL")}
+            >
               <TabsList>
                 <TabsTrigger value="ALL">All</TabsTrigger>
                 {Object.values(Status).map((s) => (
@@ -193,7 +202,9 @@ const MyTasksPage = () => {
                     <div className="flex items-start justify-between">
                       <CardTitle>{task.title}</CardTitle>
                       <DropdownMenu>
-                        <DropdownMenuTrigger render={<Button variant="ghost" size="sm" />}>
+                        <DropdownMenuTrigger
+                          render={<Button variant="ghost" size="sm" />}
+                        >
                           <MoreHorizontal className="size-4" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
@@ -201,7 +212,10 @@ const MyTasksPage = () => {
                             <DropdownMenuItem
                               key={s}
                               onClick={() => handleStatusChange(task.id, s)}
-                              disabled={task.status === s || task.status === Status.COMPLETED}
+                              disabled={
+                                task.status === s ||
+                                task.status === Status.COMPLETED
+                              }
                             >
                               Mark as {STATUS_CONFIG[s].label}
                             </DropdownMenuItem>
@@ -255,7 +269,10 @@ const MyTasksPage = () => {
             placeholder="Search tasks..."
             className="w-72"
           />
-          <Tabs value={status} onValueChange={(v) => setStatus(v as Status | "ALL")}>
+          <Tabs
+            value={status}
+            onValueChange={(v) => setStatus(v.value as Status | "ALL")}
+          >
             <TabsList>
               <TabsTrigger value="ALL">All</TabsTrigger>
               {Object.values(Status).map((s) => (
@@ -265,7 +282,10 @@ const MyTasksPage = () => {
               ))}
             </TabsList>
           </Tabs>
-          <Tabs value={priority} onValueChange={(v) => setPriority(v as Priority | "ALL")}>
+          <Tabs
+            value={priority}
+            onValueChange={(v) => setPriority(v.value as Priority | "ALL")}
+          >
             <TabsList>
               <TabsTrigger value="ALL">All</TabsTrigger>
               {Object.values(Priority).map((p) => (
@@ -282,7 +302,9 @@ const MyTasksPage = () => {
           data={tasks}
           pagination={data?.pagination}
           isLoading={isLoading}
-          onPaginationChange={(paginationState) => setPage(paginationState.pageIndex + 1)}
+          onPaginationChange={(paginationState) =>
+            setPage(paginationState.pageIndex + 1)
+          }
           emptyTitle="No tasks found"
           emptyDescription="Create your first task to get started."
         />

@@ -1,36 +1,18 @@
-"use client";
+import * as React from "react"
 
-import { cn } from "@/utils/utils";
-import { Field as ArkField } from "@ark-ui/react/field";
-import type React from "react";
+import { cn } from "@/utils/utils"
 
-export const Textarea = (
-  props: React.ComponentProps<typeof ArkField.Textarea>,
-) => {
-  const { className, ...rest } = props;
-
+function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
   return (
-    <ArkField.Textarea
-      className={cn(
-        "field-sizing-content min-h-16 w-full",
-        "flex",
-        "px-3 py-2",
-        "bg-transparent dark:bg-input/30",
-        "text-base md:text-sm",
-        "rounded-lg border border-input shadow-xs/5",
-        "placeholder:text-muted-foreground/64",
-        "transition-[color,box-shadow]",
-        "outline-none focus-visible:border-primary focus-visible:ring-[3px] focus-visible:ring-ring/32",
-        "aria-invalid:border-destructive aria-invalid:text-destructive aria-invalid:ring-[3px] aria-invalid:ring-destructive/24",
-        "data-invalid:border-destructive data-invalid:text-destructive data-invalid:ring-[3px] data-invalid:ring-destructive/24",
-        "dark:aria-invalid:border-destructive-foreground dark:aria-invalid:text-destructive-foreground dark:aria-invalid:ring-destructive-foreground/40",
-        "dark:data-invalid:border-destructive-foreground dark:data-invalid:text-destructive-foreground dark:data-invalid:ring-destructive-foreground/40",
-        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-64",
-        "motion-reduce:transition-none!",
-        className,
-      )}
+    <textarea
       data-slot="textarea"
-      {...rest}
+      className={cn(
+        "flex field-sizing-content min-h-16 w-full rounded-none border border-input bg-transparent px-2.5 py-2 text-xs transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-1 aria-invalid:ring-destructive/20 md:text-xs dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        className
+      )}
+      {...props}
     />
-  );
-};
+  )
+}
+
+export { Textarea }

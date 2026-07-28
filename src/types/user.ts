@@ -14,3 +14,4 @@ export interface TUser {
   createdAt: string;
   updatedAt: string;
 }
+

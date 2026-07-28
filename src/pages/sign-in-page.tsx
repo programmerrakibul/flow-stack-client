@@ -4,7 +4,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
-import { signIn } from "@/stores/auth-store";
+import { signIn, useAuthStore } from "@/stores/auth-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { signInSchema, type SignInFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,6 +16,7 @@ import { Link, useNavigate } from "react-router";
 const SignInPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const {
     control,
@@ -28,6 +29,10 @@ const SignInPage = () => {
       password: "",
     },
   });
+
+  if (isAuthenticated) {
+    navigate("/", { replace: true });
+  }
 
   const onSubmit = async (data: SignInFormData) => {
     try {

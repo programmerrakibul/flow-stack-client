@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STATUS_CONFIG } from "@/constants/enums";
 import { useAdminDashboard } from "@/hooks/use-dashboard-queries";
 import { useAuthStore } from "@/stores/auth-store";
-import type { TAdminDashboard } from "@/types/api-types";
+import type { TAdminDashboard } from "@/types/dashboard";
 import { Activity, ListTodo, UserCheck, Users } from "lucide-react";
 import { Navigate } from "react-router";
 

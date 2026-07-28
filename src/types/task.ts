@@ -12,7 +12,7 @@ export enum Status {
   COMPLETED = "COMPLETED",
 }
 
-export interface TTask {
+export type TTask = {
   id: string;
   title: string;
   description: string;
@@ -22,4 +22,14 @@ export interface TTask {
   createdAt: string;
   updatedAt: string;
   creator?: TUser;
-}
+};
+
+export type TTaskQueryParams = {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: Status;
+  priority?: Priority;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+};

@@ -1,9 +1,13 @@
 import api from "@/lib/axios";
-import type { TTask, TTaskPayload, TTaskQueryParams } from "@/types/api-types";
 import type { TSuccessResponse } from "@/types/api";
+import type { TTask, TTaskQueryParams } from "@/types/task";
+import {
+  type TaskFormData,
+  type TaskUpdateFormData,
+} from "@/validation/task.schema";
 
 export const taskService = {
-  create: async (payload: TTaskPayload) => {
+  create: async (payload: TaskFormData) => {
     const { data } = await api.post<TSuccessResponse<TTask>>("/tasks", payload);
     return data;
   },
@@ -20,10 +24,10 @@ export const taskService = {
     return data;
   },
 
-  update: async (id: string, payload: Partial<TTaskPayload>) => {
+  update: async (id: string, payload: Partial<TaskUpdateFormData>) => {
     const { data } = await api.patch<TSuccessResponse<TTask>>(
       `/tasks/${id}`,
-      payload
+      payload,
     );
     return data;
   },
@@ -31,7 +35,7 @@ export const taskService = {
   updateStatus: async (id: string, status: TTask["status"]) => {
     const { data } = await api.patch<TSuccessResponse<TTask>>(
       `/tasks/${id}/status`,
-      { status }
+      { status },
     );
     return data;
   },

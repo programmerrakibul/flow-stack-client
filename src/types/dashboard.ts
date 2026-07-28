@@ -1,40 +1,5 @@
 import type { Priority, Status, TTask } from "./task";
-import type { Role, TUser } from "./user";
-
-export interface TJwtPayload {
-  id: string;
-  email: string;
-  role: Role;
-  emailVerified: boolean;
-}
-
-export interface TSignInPayload {
-  email: string;
-  password: string;
-}
-
-export interface TSignUpPayload {
-  name: string;
-  email: string;
-  password: string;
-  image?: string;
-}
-
-export interface TTaskPayload {
-  title: string;
-  description: string;
-  priority: Priority;
-}
-
-export interface TTaskQueryParams {
-  page?: number;
-  limit?: number;
-  search?: string;
-  status?: Status;
-  priority?: Priority;
-  sortBy?: string;
-  sortOrder?: "asc" | "desc";
-}
+import type { TUser } from "./user";
 
 export interface TUserDashboard {
   totalTasks: number;
