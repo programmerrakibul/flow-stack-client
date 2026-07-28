@@ -154,7 +154,7 @@ const AdminAllTasksPage = () => {
           placeholder="Search tasks..."
           className="w-72"
         />
-        <Tabs value={status} onValueChange={(v) => { setStatus(v as Status | "ALL"); setPage(1); }}>
+        <Tabs value={status} onValueChange={(v) => { setStatus(v.value as Status | "ALL"); setPage(1); }}>
           <TabsList>
             <TabsTrigger value="ALL">All</TabsTrigger>
             {Object.values(Status).map((s) => (
@@ -164,7 +164,7 @@ const AdminAllTasksPage = () => {
             ))}
           </TabsList>
         </Tabs>
-        <Tabs value={priority} onValueChange={(v) => { setPriority(v as Priority | "ALL"); setPage(1); }}>
+        <Tabs value={priority} onValueChange={(v) => { setPriority(v.value as Priority | "ALL"); setPage(1); }}>
           <TabsList>
             <TabsTrigger value="ALL">All</TabsTrigger>
             {Object.values(Priority).map((p) => (
