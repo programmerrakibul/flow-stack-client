@@ -1,8 +1,9 @@
 import { fetchProfile, useAuthStore } from "@/stores/auth-store";
 import { useEffect } from "react";
+import { Spinner } from "../ui/spinner";
 
 const AuthLoader = ({ children }: { children: React.ReactNode }) => {
-  const { isLoading } = useAuthStore();
+  const isLoading = useAuthStore((s) => s.authLoading);
 
   useEffect(() => {
     fetchProfile();
@@ -10,8 +11,8 @@ const AuthLoader = ({ children }: { children: React.ReactNode }) => {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex h-dvh items-center justify-center">
+        <Spinner className="size-8" />
       </div>
     );
   }

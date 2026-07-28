@@ -27,7 +27,7 @@ const Navbar = () => {
             <AnimatedThemeToggler className="size-9" />
 
             {data.isLoading ? (
-              <Spinner className="size-8" />
+              <Spinner className="size-6" />
             ) : data.isAuthenticated ? (
               <>
                 <Button onClick={() => navigate("/dashboard")}>

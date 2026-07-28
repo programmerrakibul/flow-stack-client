@@ -5,14 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
 import { useUserDashboard } from "@/hooks/use-dashboard-queries";
 import { useAuthStore } from "@/stores/auth-store";
-import type { TUserDashboard } from "@/types/api-types";
+import type { TUserDashboard } from "@/types/dashboard";
 import type { Priority, Status } from "@/types/task";
 import { ListTodo } from "lucide-react";
 import { Navigate } from "react-router";
 
 const UserOverviewPage = () => {
   const authData = useAuthStore();
-  const { data = {}, isLoading, error, refetch } = useUserDashboard();
+  const { data, isLoading, error, refetch } = useUserDashboard();
 
   if (isLoading) return <LoadingSkeleton variant="stats" />;
 
@@ -21,8 +21,6 @@ const UserOverviewPage = () => {
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
   const dashboard = data?.data as TUserDashboard;
-
-  console.log(dashboard);
 
   return (
     <div className="space-y-6">
@@ -90,7 +88,7 @@ const UserOverviewPage = () => {
         </CardContent>
       </Card>
 
-      { dashboard.recentActivity.length > 0 && (
+      {dashboard.recentActivity.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -99,7 +97,7 @@ const UserOverviewPage = () => {
             <div className="space-y-3">
               {dashboard.recentActivity.map((task) => {
                 const statusConf = STATUS_CONFIG[task.status];
-                
+
                 return (
                   <div
                     key={task.id}

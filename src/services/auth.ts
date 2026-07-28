@@ -1,15 +1,15 @@
 import api from "@/lib/axios";
 import type { TResponse } from "@/types/api";
-import type { TSignInPayload, TSignUpPayload } from "@/types/api-types";
 import type { TUser } from "@/types/user";
+import type { SignInFormData, SignUpFormData } from "@/validation/auth.schema";
 
 export const authService = {
-  signUp: async (payload: TSignUpPayload) => {
+  signUp: async (payload: Omit<SignUpFormData, "confirmPassword">) => {
     const { data } = await api.post<TResponse<TUser>>("/auth/sign-up", payload);
     return data;
   },
 
-  signIn: async (payload: TSignInPayload) => {
+  signIn: async (payload: SignInFormData) => {
     const { data } = await api.post<TResponse<TUser>>("/auth/sign-in", payload);
     return data;
   },

@@ -9,15 +9,18 @@ type AuthState =
       user: TUser;
       isLoading: boolean;
       isAuthenticated: true;
+      authLoading: false;
     }
   | {
       isLoading: boolean;
+      authLoading: true;
       isAuthenticated: false;
     };
 
 export const useAuthStore = create<AuthState>(() => ({
-  isLoading: true,
+  isLoading: false,
   isAuthenticated: false,
+  authLoading: true,
 }));
 
 export const setAuthLoading = (isLoading: boolean) => {
@@ -107,6 +110,7 @@ export const signOut = async () => {
 
 export const fetchProfile = async () => {
   setAuthLoading(true);
+  useAuthStore.setState({ authLoading: true });
 
   try {
     const token = localStorageUtils.getAuthToken();
@@ -133,6 +137,7 @@ export const fetchProfile = async () => {
     localStorageUtils.removeAuthToken();
   } finally {
     setAuthLoading(false);
+    useAuthStore.setState({ authLoading: false });
   }
 };
 

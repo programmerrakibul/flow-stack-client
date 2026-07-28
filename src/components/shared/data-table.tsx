@@ -7,15 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Empty,
@@ -23,48 +15,38 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from "@/components/ui/empty";
-import {
-  type ColumnDef,
-  type PaginationState,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Inbox } from "lucide-react";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+export interface DataTableColumn<T> {
+  header: string;
+  accessor: keyof T;
+  cell?: (value: T[keyof T], row: T) => React.ReactNode;
+  className?: string;
+}
+
+interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
   pagination?: TPagination;
   isLoading?: boolean;
-  onPaginationChange?: (pagination: PaginationState) => void;
+  onPageChange?: (page: number) => void;
+  renderCard?: (item: T, index: number) => React.ReactNode;
   emptyTitle?: string;
   emptyDescription?: string;
 }
 
-const DataTable = <TData, TValue>({
+function DataTable<T extends object>({
   columns,
   data,
   pagination,
   isLoading,
-  onPaginationChange,
+  onPageChange,
+  renderCard,
   emptyTitle = "No results",
   emptyDescription = "No data available.",
-}: DataTableProps<TData, TValue>) => {
-  const table = useReactTable({
-    data,
-    columns,
-    pageCount: pagination?.totalPage ?? -1,
-    manualPagination: true,
-    getCoreRowModel: getCoreRowModel(),
-    onPaginationChange: onPaginationChange,
-    state: {
-      pagination: {
-        pageIndex: (pagination?.page ?? 1) - 1,
-        pageSize: pagination?.limit ?? 10,
-      },
-    },
-  });
+}: DataTableProps<T>) {
+  const isMobile = useIsMobile();
 
   if (isLoading) {
     return (
@@ -86,118 +68,93 @@ const DataTable = <TData, TValue>({
     );
   }
 
-  const generatePageNumbers = () => {
-    if (!pagination) return [];
-    const { totalPage, page } = pagination;
-    const pages: (number | "ellipsis")[] = [];
-
-    if (totalPage <= 7) {
-      for (let i = 1; i <= totalPage; i++) pages.push(i);
-    } else {
-      pages.push(1);
-      if (page > 3) pages.push("ellipsis");
-      for (
-        let i = Math.max(2, page - 1);
-        i <= Math.min(totalPage - 1, page + 1);
-        i++
-      ) {
-        pages.push(i);
-      }
-      if (page < totalPage - 2) pages.push("ellipsis");
-      pages.push(totalPage);
-    }
-
-    return pages;
-  };
+  const totalPages = pagination?.totalPage ?? 1;
+  const currentPage = pagination?.page ?? 1;
+  const total = pagination?.total ?? data.length;
+  const limit = pagination?.limit ?? 10;
+  const endIndex = Math.min(currentPage * limit, total);
 
   return (
-    <div className="space-y-4">
-      <div className="rounded-none border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+    <div className="w-full space-y-4">
+      {isMobile && renderCard ? (
+        <div className="space-y-4">
+          {data.map((row, index) => renderCard(row, index))}
+        </div>
+      ) : (
+        <div className="rounded-none border overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-muted/50">
+                {columns.map((column) => (
+                  <TableHead
+                    key={String(column.accessor)}
+                    className={`${column.className || ""} whitespace-nowrap`}
+                  >
+                    {column.header}
                   </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(
-                      cell.column.columnDef.cell,
-                      cell.getContext()
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            </TableHeader>
+            <TableBody>
+              {data.map((row, index) => (
+                <TableRow key={index}>
+                  {columns.map((column) => {
+                    const value = row[column.accessor];
+                    return (
+                      <TableCell
+                        key={String(column.accessor)}
+                        className={column.className}
+                      >
+                        {column.cell
+                          ? column.cell(value, row)
+                          : String(value ?? "")}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
 
-      {pagination && pagination.totalPage > 1 && (
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() =>
-                  table.previousPage()
-                }
-                className={
-                  !pagination.hasPreviousPage
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-
-            {generatePageNumbers().map((pageNum, i) =>
-              pageNum === "ellipsis" ? (
-                <PaginationItem key={`ellipsis-${i}`}>
-                  <PaginationEllipsis />
-                </PaginationItem>
-              ) : (
-                <PaginationItem key={pageNum}>
-                  <PaginationLink
-                    isActive={pageNum === pagination.page}
-                    onClick={() => table.setPageIndex(pageNum - 1)}
-                    className="cursor-pointer"
-                  >
-                    {pageNum}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            )}
-
-            <PaginationItem>
-              <PaginationNext
-                onClick={() =>
-                  table.nextPage()
-                }
-                className={
-                  !pagination.hasNextPage
-                    ? "pointer-events-none opacity-50"
-                    : "cursor-pointer"
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+      {pagination && totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 bg-muted/30 rounded-lg border border-border">
+          <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left order-2 sm:order-1">
+            <div className="hidden sm:block">
+              Page {currentPage} of {totalPages} &bull; Showing{" "}
+              {endIndex} of {total} items
+            </div>
+            <div className="sm:hidden">
+              {currentPage} / {totalPages}
+            </div>
+          </div>
+          <div className="flex gap-2 order-1 sm:order-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange?.(currentPage - 1)}
+              disabled={!pagination.hasPreviousPage}
+              className="gap-1 text-xs h-8 px-2 sm:h-9 sm:px-3 sm:gap-2"
+            >
+              <span className="text-lg sm:text-base">&larr;</span>
+              <span className="hidden sm:inline">Previous</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange?.(currentPage + 1)}
+              disabled={!pagination.hasNextPage}
+              className="gap-1 text-xs h-8 px-2 sm:h-9 sm:px-3 sm:gap-2"
+            >
+              <span className="hidden sm:inline">Next</span>
+              <span className="text-lg sm:text-base">&rarr;</span>
+            </Button>
+          </div>
+        </div>
       )}
     </div>
   );
-};
+}
 
 export default DataTable;

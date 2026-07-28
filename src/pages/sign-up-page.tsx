@@ -1,21 +1,23 @@
 import Container from "@/components/shared/container";
+import FileUpload from "@/components/shared/file-upload";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "@/components/ui/toast";
 import { uploadImage } from "@/lib/upload-image";
-import { signUp } from "@/stores/auth-store";
+import { signUp, useAuthStore } from "@/stores/auth-store";
 import { signUpSchema, type SignUpFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Zap } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const {
     control,
@@ -32,15 +34,16 @@ const SignUpPage = () => {
     },
   });
 
+  if (isAuthenticated) {
+    navigate("/", { replace: true });
+  }
+
   const onSubmit = async (data: SignUpFormData) => {
     try {
       let imageUrl = data.image || undefined;
 
       if (data.image && data.image.startsWith("blob:")) {
-        toast.create({
-          title: "Uploading image...",
-          type: "loading",
-        });
+        toast.loading("Uploading image...");
         const response = await fetch(data.image);
         const blob = await response.blob();
         const file = new File([blob], "profile.jpg", { type: blob.type });
@@ -55,19 +58,14 @@ const SignUpPage = () => {
         image: imageUrl,
       });
 
-      navigate("/dashboard", { replace: true });
-
-      toast.create({
-        title: "Welcome!",
+      toast.success("Welcome!", {
         description: "Your account has been created successfully.",
-        type: "success",
       });
+      navigate("/dashboard", { replace: true });
     } catch {
       setUploadProgress(null);
-      toast.create({
-        title: "Sign up failed",
+      toast.error("Sign up failed", {
         description: "An unexpected error occurred. Please try again.",
-        type: "error",
       });
     }
   };
@@ -183,20 +181,9 @@ const SignUpPage = () => {
                 <FieldLabel htmlFor="sign-up-image">
                   Profile Image (optional)
                 </FieldLabel>
-                <Input
-                  {...field}
-                  id="sign-up-image"
-                  type="file"
-                  accept="image/*"
-                  aria-invalid={fieldState.invalid}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const url = URL.createObjectURL(file);
-                      field.onChange(url);
-                    }
-                  }}
-                  value={undefined}
+                <FileUpload
+                  value={field.value}
+                  onChange={field.onChange}
                 />
                 {uploadProgress !== null && (
                   <p className="text-xs text-muted-foreground">

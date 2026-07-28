@@ -1,16 +1,16 @@
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Spinner } from "@/components/ui/spinner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCreateTask } from "@/hooks/use-task-queries";
-import { taskSchema, type TaskFormData } from "@/validation/task.schema";
-import { Priority } from "@/types/task";
+import { Textarea } from "@/components/ui/textarea";
 import { PRIORITY_CONFIG } from "@/constants/enums";
+import { useCreateTask } from "@/hooks/use-task";
+import { Priority } from "@/types/task";
+import { taskSchema, type TaskFormData } from "@/validation/task.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, useForm } from "react-hook-form";
 
 const AddTaskPage = () => {
   const createTask = useCreateTask();
@@ -76,7 +76,9 @@ const AddTaskPage = () => {
               name="description"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="task-description">Description</FieldLabel>
+                  <FieldLabel htmlFor="task-description">
+                    Description
+                  </FieldLabel>
                   <Textarea
                     {...field}
                     id="task-description"
