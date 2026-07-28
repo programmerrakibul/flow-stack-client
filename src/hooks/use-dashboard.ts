@@ -1,17 +1,32 @@
-import { toast } from "sonner";
+import { queryClient } from "@/providers/query-provider";
 import { dashboardService } from "@/services/dashboard";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAuthStore } from "@/stores/auth-store";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { taskQueryKeys } from "./use-task";
+
+export const getDashboardQueryKeys = {
+  all: ["dashboard"],
+  user: ["dashboard", "user"],
+  admin: ["dashboard", "admin"],
+};
 
 export const useUserDashboard = () => {
+  const data = useAuthStore();
+  const email = data.isAuthenticated ? data.user.email : "";
+
   return useQuery({
-    queryKey: ["dashboard", "user"],
+    queryKey: [{ email }, ...getDashboardQueryKeys.user],
     queryFn: () => dashboardService.getUserDashboard(),
   });
 };
 
 export const useAdminDashboard = () => {
+  const data = useAuthStore();
+  const email = data.isAuthenticated ? data.user.email : "";
+
   return useQuery({
-    queryKey: ["dashboard", "admin"],
+    queryKey: [...getDashboardQueryKeys.admin, { email }],
     queryFn: () => dashboardService.getAdminDashboard(),
   });
 };
@@ -21,20 +36,24 @@ export const useAdminUsers = (params?: {
   limit?: number;
   search?: string;
 }) => {
+  const data = useAuthStore();
+  const email = data.isAuthenticated ? data.user.email : "";
+
   return useQuery({
-    queryKey: ["dashboard", "admin", "users", params],
+    queryKey: [{ email }, ...getDashboardQueryKeys.admin, "users", params],
     queryFn: () => dashboardService.getAdminUsers(params),
   });
 };
 
 export const useToggleUserActive = () => {
-  const queryClient = useQueryClient();
+  const data = useAuthStore();
+  const email = data.isAuthenticated ? data.user.email : "";
 
   return useMutation({
     mutationFn: (userId: string) => dashboardService.toggleUserActive(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["dashboard", "admin", "users"],
+        queryKey: [...getDashboardQueryKeys.admin, { email }, "users"],
       });
       toast.success("User updated", {
         description: "User status has been toggled.",
@@ -51,13 +70,11 @@ export const useToggleUserActive = () => {
 };
 
 export const useDeleteUser = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: (userId: string) => dashboardService.deleteUser(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["dashboard", "admin", "users"],
+        queryKey: ["dashboard", "admin", "users", taskQueryKeys.all],
       });
       toast.success("User deleted", {
         description: "User has been deleted successfully.",
@@ -80,8 +97,16 @@ export const useAdminTasks = (params?: {
   status?: string;
   priority?: string;
 }) => {
+  const data = useAuthStore();
+  const email = data.isAuthenticated ? data.user.email : "";
+
   return useQuery({
-    queryKey: ["dashboard", "admin", "tasks", params],
+    queryKey: [
+      { email },
+      ...getDashboardQueryKeys.admin,
+      taskQueryKeys.all,
+      params,
+    ],
     queryFn: () => dashboardService.getAllTasks(params),
   });
 };

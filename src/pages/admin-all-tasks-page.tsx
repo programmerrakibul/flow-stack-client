@@ -1,8 +1,8 @@
 import AlertDialogConfirm from "@/components/shared/alert-dialog-confirm";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import DataTable from "@/components/shared/data-table";
-import TaskFilters from "@/components/shared/task-filters";
 import ErrorState from "@/components/shared/error-state";
+import TaskFilters from "@/components/shared/task-filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
-import { useAdminTasks } from "@/hooks/use-dashboard-queries";
+import { useAdminTasks } from "@/hooks/use-dashboard";
 import { useDeleteTask, useUpdateTaskStatus } from "@/hooks/use-task";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
 import type { TTask } from "@/types/task";

@@ -50,8 +50,6 @@ const SignUpPage = () => {
         setUploadProgress(null);
       }
 
-      console.log({imageUrl});
-
       await signUp({
         name: data.name,
         email: data.email,

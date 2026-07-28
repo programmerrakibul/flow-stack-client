@@ -3,7 +3,7 @@ import LoadingSkeleton from "@/components/shared/loading-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STATUS_CONFIG } from "@/constants/enums";
-import { useAdminDashboard } from "@/hooks/use-dashboard-queries";
+import { useAdminDashboard } from "@/hooks/use-dashboard";
 import { useAuthStore } from "@/stores/auth-store";
 import type { TAdminDashboard } from "@/types/dashboard";
 import { Status } from "@/types/task";

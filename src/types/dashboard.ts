@@ -11,8 +11,8 @@ export type TasksByPriority = {
 
 export interface TUserDashboard {
   totalTasks: number;
-  tasksByStatus: { status: Status; count: number };
-  tasksByPriority: { priority: Priority; count: number };
+  tasksByStatus: TasksByStatus;
+  tasksByPriority: TasksByPriority;
   recentActivity: TTask[];
 }
 

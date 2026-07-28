@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ROLE_CONFIG } from "@/constants/enums";
-import { useAdminUsers, useDeleteUser } from "@/hooks/use-dashboard-queries";
+import { useAdminUsers, useDeleteUser } from "@/hooks/use-dashboard";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
 import type { TUser } from "@/types/user";
 import { Role } from "@/types/user";
