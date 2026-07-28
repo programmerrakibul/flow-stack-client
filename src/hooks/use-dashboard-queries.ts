@@ -1,4 +1,4 @@
-import { toast } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { dashboardService } from "@/services/dashboard";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -36,19 +36,15 @@ export const useToggleUserActive = () => {
       queryClient.invalidateQueries({
         queryKey: ["dashboard", "admin", "users"],
       });
-      toast.create({
-        title: "User updated",
+      toast.success("User updated", {
         description: "User status has been toggled.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to update user",
+      toast.error("Failed to update user", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });
@@ -63,19 +59,15 @@ export const useDeleteUser = () => {
       queryClient.invalidateQueries({
         queryKey: ["dashboard", "admin", "users"],
       });
-      toast.create({
-        title: "User deleted",
+      toast.success("User deleted", {
         description: "User has been deleted successfully.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to delete user",
+      toast.error("Failed to delete user", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });

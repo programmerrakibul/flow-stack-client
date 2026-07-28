@@ -1,4 +1,4 @@
-import { toast } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { queryClient } from "@/providers/query-provider";
 import { taskService } from "@/services/task";
 import { useAuthStore } from "@/stores/auth-store";
@@ -41,19 +41,15 @@ export const useCreateTask = () => {
     mutationFn: (payload: TaskFormData) => taskService.create(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
-      toast.create({
-        title: "Task created",
+      toast.success("Task created", {
         description: "Your task has been created successfully.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to create task",
+      toast.error("Failed to create task", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });
@@ -70,19 +66,15 @@ export const useUpdateTask = () => {
     }) => taskService.update(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
-      toast.create({
-        title: "Task updated",
+      toast.success("Task updated", {
         description: "Task has been updated successfully.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to update task",
+      toast.error("Failed to update task", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });
@@ -94,19 +86,15 @@ export const useUpdateTaskStatus = () => {
       taskService.updateStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
-      toast.create({
-        title: "Status updated",
+      toast.success("Status updated", {
         description: "Task status has been updated.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to update status",
+      toast.error("Failed to update status", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });
@@ -117,19 +105,15 @@ export const useDeleteTask = () => {
     mutationFn: (id: string) => taskService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
-      toast.create({
-        title: "Task deleted",
+      toast.success("Task deleted", {
         description: "Task has been deleted successfully.",
-        type: "success",
       });
     },
     onError: (
       error: Error & { response?: { data?: { message?: string } } },
     ) => {
-      toast.create({
-        title: "Failed to delete task",
+      toast.error("Failed to delete task", {
         description: error.response?.data?.message || "Something went wrong.",
-        type: "error",
       });
     },
   });

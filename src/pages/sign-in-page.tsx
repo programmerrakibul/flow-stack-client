@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "@/components/ui/toast";
+import { toast } from "sonner";
 import { signIn, useAuthStore } from "@/stores/auth-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { signInSchema, type SignInFormData } from "@/validation/auth.schema";
@@ -39,18 +39,14 @@ const SignInPage = () => {
       await signIn(data);
       navigate("/dashboard", { replace: true });
 
-      toast.create({
-        title: "Welcome back!",
+      toast.success("Welcome back!", {
         description: "You have been signed in successfully.",
-        type: "success",
       });
     } catch (err: unknown) {
       const errMsg = getErrorMessage(err);
 
-      toast.create({
-        title: "Sign in failed",
+      toast.error("Sign in failed", {
         description: errMsg || "Invalid credentials.",
-        type: "error",
       });
     }
   };
