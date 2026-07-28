@@ -1,11 +1,11 @@
 import api from "@/lib/axios";
+import type { TSuccessResponse } from "@/types/api";
 import type {
   TAdminDashboard,
   TAdminUser,
-  TSuccessResponse,
-  TTask,
   TUserDashboard,
 } from "@/types/dashboard";
+import type { TTask } from "@/types/task";
 
 export const dashboardService = {
   getUserDashboard: async () => {

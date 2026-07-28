@@ -12,7 +12,7 @@ import { Navigate } from "react-router";
 
 const UserOverviewPage = () => {
   const authData = useAuthStore();
-  const { data = {}, isLoading, error, refetch } = useUserDashboard();
+  const { data, isLoading, error, refetch } = useUserDashboard();
 
   if (isLoading) return <LoadingSkeleton variant="stats" />;
 

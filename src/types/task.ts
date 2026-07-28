@@ -19,9 +19,9 @@ export type TTask = {
   priority: Priority;
   status: Status;
   creatorId: string;
+  creator: Pick<TUser, "name" | "email" | "id">;
   createdAt: string;
   updatedAt: string;
-  creator?: TUser;
 };
 
 export type TTaskQueryParams = {
