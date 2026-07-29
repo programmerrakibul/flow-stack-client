@@ -8,7 +8,6 @@ import type {
 } from "@/validation/task.schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { dashboardQueryKeys } from "./use-dashboard";
 
 export const taskQueryKeys = {
   all: ["tasks"],
@@ -31,7 +30,7 @@ export const useCreateTask = () => {
     mutationFn: (payload: TaskFormData) => taskService.create(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [...dashboardQueryKeys.all, ...taskQueryKeys.all],
+        queryKey: taskQueryKeys.all,
       });
       toast.success("Task created", {
         description: "Your task has been created successfully.",
@@ -58,7 +57,7 @@ export const useUpdateTask = () => {
     }) => taskService.update(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [...dashboardQueryKeys.all, ...taskQueryKeys.all],
+        queryKey: taskQueryKeys.all,
       });
       toast.success("Task updated", {
         description: "Task has been updated successfully.",
@@ -80,7 +79,7 @@ export const useUpdateTaskStatus = () => {
       taskService.updateStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [...dashboardQueryKeys.all, ...taskQueryKeys.all],
+        queryKey: taskQueryKeys.all,
       });
       toast.success("Status updated", {
         description: "Task status has been updated.",
@@ -101,7 +100,7 @@ export const useDeleteTask = () => {
     mutationFn: (id: string) => taskService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [...dashboardQueryKeys.all, ...taskQueryKeys.all],
+        queryKey: taskQueryKeys.all,
       });
       toast.success("Task deleted", {
         description: "Task has been deleted successfully.",

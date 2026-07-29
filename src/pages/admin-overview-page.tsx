@@ -22,7 +22,7 @@ const AdminOverviewPage = () => {
 
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data?.data as TAdminDashboard;
+  const dashboard = data as TAdminDashboard;
 
   const statMetrics = [
     {
@@ -71,7 +71,7 @@ const AdminOverviewPage = () => {
             {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
               const config = STATUS_CONFIG[key as Status];
               const Icon = config.icon;
-              
+
               return (
                 <div key={key} className="flex items-center gap-2">
                   <Icon className={`size-4 ${config.color}`} />

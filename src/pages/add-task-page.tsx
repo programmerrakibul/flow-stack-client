@@ -29,8 +29,8 @@ const AddTaskPage = () => {
     },
   });
 
-  const onSubmit = async (data: TaskFormData) => {
-    await createTask.mutateAsync(data);
+  const onSubmit = (data: TaskFormData) => {
+    createTask.mutate(data);
     if (createTask.isSuccess) {
       reset();
     }

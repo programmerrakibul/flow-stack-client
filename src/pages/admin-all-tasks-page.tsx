@@ -13,8 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
-import { useAdminTasks } from "@/hooks/use-dashboard";
-import { useDeleteTask } from "@/hooks/use-task";
+import { useDeleteTask, useTasks } from "@/hooks/use-task";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
 import type { TTask } from "@/types/task";
 import { Priority, Status } from "@/types/task";
@@ -39,7 +38,7 @@ const AdminAllTasksPage = () => {
     [page, limit, search, status, priority],
   );
 
-  const { data, isLoading, error, refetch } = useAdminTasks(queryParams);
+  const { data, isLoading, error, refetch } = useTasks(queryParams);
   const deleteTask = useDeleteTask();
 
   const handleDelete = async () => {

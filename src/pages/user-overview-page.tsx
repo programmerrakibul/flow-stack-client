@@ -16,7 +16,7 @@ import { Navigate, useNavigate } from "react-router";
 const UserOverviewPage = () => {
   const authData = useAuthStore();
   const navigate = useNavigate();
-  const { data, isLoading, error, refetch } = useUserDashboard();
+  const { isLoading, error, data, refetch } = useUserDashboard();
 
   if (isLoading) return <LoadingSkeleton variant="stats" />;
 
@@ -24,7 +24,7 @@ const UserOverviewPage = () => {
 
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data?.data as TUserDashboard;
+  const dashboard = data as TUserDashboard;
 
   return (
     <section className="space-y-6">
