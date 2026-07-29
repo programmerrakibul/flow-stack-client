@@ -3,7 +3,7 @@ export enum Role {
   ADMIN = "ADMIN",
 }
 
-export interface TUser {
+export type TUser = {
   id: string;
   name: string;
   email: string;
@@ -13,5 +13,4 @@ export interface TUser {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
-
+};

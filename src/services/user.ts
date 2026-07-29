@@ -8,10 +8,9 @@ export const userService = {
     limit?: number;
     search?: string;
   }) => {
-    const { data } = await api.get<TSuccessResponse<TAdminUser[]>>(
-      "/dashboard/admin/users",
-      { params },
-    );
+    const { data } = await api.get<TSuccessResponse<TAdminUser[]>>("/users", {
+      params,
+    });
 
     if (!data.success) throw new Error(data.message);
 

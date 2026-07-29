@@ -16,7 +16,7 @@ export interface TUserDashboard {
   recentActivity: TTask[];
 }
 
-export interface TAdminDashboard {
+export type TAdminDashboard= {
   totalUsers: number;
   activeUsers: number;
   totalTasks: number;

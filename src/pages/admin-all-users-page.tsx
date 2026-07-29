@@ -3,14 +3,18 @@ import type { DataTableColumn } from "@/components/shared/data-table";
 import DataTable from "@/components/shared/data-table";
 import ErrorState from "@/components/shared/error-state";
 import SearchInput from "@/components/shared/search-input";
+import UserActionsDropdown from "@/components/shared/user-actions-dropdown";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ROLE_CONFIG } from "@/constants/enums";
-import { useAdminUsers, useDeleteUser, useToggleUserActive } from "@/hooks/use-user";
+import {
+  useAdminUsers,
+  useDeleteUser,
+  useToggleUserActive,
+} from "@/hooks/use-user";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
-import type { TUser } from "@/types/user";
+import type { TAdminUser } from "@/types/dashboard";
 import { Role } from "@/types/user";
-import UserActionsDropdown from "@/components/shared/user-actions-dropdown";
 import { useMemo, useState } from "react";
 
 const AdminAllUsersPage = () => {
@@ -48,7 +52,7 @@ const AdminAllUsersPage = () => {
     setDeleteUserId(null);
   };
 
-  const columns: DataTableColumn<TUser>[] = [
+  const columns: DataTableColumn<TAdminUser>[] = [
     {
       header: "Name",
       accessor: "name",
@@ -64,6 +68,14 @@ const AdminAllUsersPage = () => {
       cell: (value) => {
         const config = ROLE_CONFIG[value as Role];
         return <Badge variant={config.badgeVariant}>{config.label}</Badge>;
+      },
+    },
+    {
+      header: "Total Tasks",
+      accessor: "_count",
+      cell: (value) => {
+        const count = (value as TAdminUser["_count"]).tasks;
+        return <span> {count} </span>;
       },
     },
     {
@@ -139,6 +151,9 @@ const AdminAllUsersPage = () => {
                     <CardTitle>{user.name}</CardTitle>
                     <p className="text-xs text-muted-foreground">
                       {user.email}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user._count.tasks} tasks
                     </p>
                   </div>
                   <UserActionsDropdown
