@@ -1,6 +1,7 @@
 import Container from "@/components/shared/container";
 import FileUpload from "@/components/shared/file-upload";
 import Logo from "@/components/shared/logo";
+import PasswordInput from "@/components/shared/password-input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -165,15 +166,13 @@ const SignUpPage = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="sign-up-password">Password</FieldLabel>
-                <Input
+                <PasswordInput
                   {...field}
                   id="sign-up-password"
-                  type="password"
                   aria-invalid={fieldState.invalid}
                   placeholder="Min 8 chars, upper, lower, number, symbol"
                   autoComplete="new-password"
                 />
-
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -189,10 +188,9 @@ const SignUpPage = () => {
                 <FieldLabel htmlFor="sign-up-confirm">
                   Confirm Password
                 </FieldLabel>
-                <Input
+                <PasswordInput
                   {...field}
                   id="sign-up-confirm"
-                  type="password"
                   aria-invalid={fieldState.invalid}
                   placeholder="Re-enter your password"
                   autoComplete="new-password"

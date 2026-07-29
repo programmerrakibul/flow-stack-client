@@ -5,20 +5,23 @@ A modern task management frontend built with React 19, TypeScript, and Vite.
 ## Features
 
 - **JWT authentication** with auto-refresh via HttpOnly cookies
-- **Role-based access control** (User & Admin dashboards under a single `/dashboard` path)
-- **Task management** with CRUD, filtering, search, and pagination
-- **Dashboard analytics** with real-time stats
-- **User management** for admin users
+- **Role-based access control** (User & Admin dashboards under a single
+  `/dashboard` path)
+- **Task management** with CRUD, filtering, search, pagination, and inline edit
+  dialog
+- **Dashboard analytics** with real-time stats for both user and admin roles
+- **User management** — activate/inactivate and delete users (admin only)
 - **Dark/light theme** with animated transitions
-- **Responsive design** (mobile card views via `renderCard`, desktop data tables)
+- **Responsive design** — mobile card views via `renderCard`, desktop data
+  tables
 - **Type-safe** throughout with TypeScript and Zod validation
-- **Immediate image upload** — profile images upload on file selection, not form submission
+- **Immediate image upload** — profile images upload on file selection, not form
+  submission
 
 ## Prerequisites
 
 - Node.js >= 20.x
 - pnpm >= 9.x
-- Flow Stack Server running (see `flow-stack-server` project)
 
 ## Environment Variables
 
@@ -26,13 +29,12 @@ Create a `.env` file in the root directory:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000/api/v1
-VITE_IMGBB_API_KEY=your_imgbb_api_key_here
+VITE_IMGBB_API_KEY=your_imgbb_api_key
 ```
 
-| Variable | Description |
-|---|---|
+| Variable            | Description          |
+| ------------------- | -------------------- |
 | `VITE_API_BASE_URL` | Backend API base URL |
-| `VITE_IMGBB_API_KEY` | imgbb API key for profile image uploads |
 
 ## Getting Started
 
@@ -81,23 +83,23 @@ flow-stack-client/
 
 ## Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| React 19 | UI framework |
-| TypeScript 6 | Type safety |
-| Vite 8 | Build tool |
-| Tailwind CSS v4 | Styling |
-| shadcn/ui | Component library |
-| Ark UI | Headless primitives (Tabs, Field, etc.) |
-| Base UI | Headless primitives (Dialog, Dropdown, ScrollArea, etc.) |
-| TanStack Query | Server state |
-| Zustand | Client state |
-| React Hook Form + Zod | Forms & validation |
-| Axios | HTTP client |
-| sonner | Toast notifications |
-| React Router v8 | Routing |
-| next-themes | Theme switching |
-| Motion | Animation library |
+| Technology            | Purpose                                                  |
+| --------------------- | -------------------------------------------------------- |
+| React 19              | UI framework                                             |
+| TypeScript 6          | Type safety                                              |
+| Vite 8                | Build tool                                               |
+| Tailwind CSS v4       | Styling                                                  |
+| shadcn/ui             | Component library                                        |
+| Ark UI                | Headless primitives (Tabs, Field, etc.)                  |
+| Base UI               | Headless primitives (Dialog, Dropdown, ScrollArea, etc.) |
+| TanStack Query        | Server state (tasks, users)                              |
+| Zustand               | Client state (auth, dashboard, filters)                  |
+| React Hook Form + Zod | Forms & validation                                       |
+| Axios                 | HTTP client                                              |
+| sonner                | Toast notifications                                      |
+| React Router v8       | Routing                                                  |
+| next-themes           | Theme switching                                          |
+| Motion                | Animation library (home page)                            |
 
 ## Scripts
 
@@ -112,6 +114,7 @@ pnpm preview      # Preview production build
 
 This project follows **Folder-Per-Concern Architecture** with flat directories
 for pages, services, hooks, and validation. Shared UI components live in
-`components/shared/`. Pre-built primitives live in `components/ui/` (do not modify).
+`components/shared/`. Pre-built primitives live in `components/ui/` (do not
+modify).
 
 For architecture details, see [AGENTS.md](./AGENTS.md).

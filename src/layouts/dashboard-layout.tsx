@@ -117,7 +117,7 @@ const DashboardLayout = () => {
             </div>
           </div>
           <Button
-            variant="secondary"
+            variant="destructive"
             size="sm"
             className="w-full justify-start"
             onClick={signOut}

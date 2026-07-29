@@ -6,7 +6,7 @@ const ThemeToggle = () => {
   return (
     <AnimatedThemeToggler
       className="size-9"
-      variant="circle"
+      variant="star"
       fromCenter
       theme={resolvedTheme as "light" | "dark" | undefined}
       onThemeChange={(theme) => setTheme(theme)}
