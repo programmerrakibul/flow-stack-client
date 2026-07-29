@@ -1,20 +1,15 @@
 import Footer from "@/components/shared/footer";
 import Navbar from "@/components/shared/navbar";
-import { Outlet, useLocation } from "react-router";
+import { Outlet } from "react-router";
 
 const RootLayout = () => {
-  const location = useLocation();
-  const isDashboard = location.pathname.startsWith("/dashboard");
-
   return (
     <div className="flex min-h-screen flex-col">
-      {!isDashboard && <Navbar />}
-
+      <Navbar />
       <main className="flex-1">
         <Outlet />
       </main>
-
-      {!isDashboard && <Footer />}
+      <Footer />
     </div>
   );
 };
