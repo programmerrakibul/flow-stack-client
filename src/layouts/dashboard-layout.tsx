@@ -1,5 +1,7 @@
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import Logo from "@/components/shared/logo";
+import ThemeToggle from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { signOut, useAuthStore } from "@/stores/auth-store";
 import { Role } from "@/types/user";
@@ -13,7 +15,6 @@ import {
   User,
   Users,
   X,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { Link, Navigate, Outlet, useLocation } from "react-router";
@@ -22,7 +23,6 @@ interface NavItem {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  roles?: Role[];
 }
 
 const userNavItems: NavItem[] = [
@@ -33,10 +33,10 @@ const userNavItems: NavItem[] = [
 ];
 
 const adminNavItems: NavItem[] = [
-  { label: "Overview", href: "/admin", icon: BarChart3 },
-  { label: "All Tasks", href: "/admin/all-tasks", icon: ListTodo },
-  { label: "All Users", href: "/admin/all-users", icon: Users },
-  { label: "Profile", href: "/admin/profile", icon: User },
+  { label: "Overview", href: "/dashboard", icon: BarChart3 },
+  { label: "All Tasks", href: "/dashboard/all-tasks", icon: ListTodo },
+  { label: "All Users", href: "/dashboard/all-users", icon: Users },
+  { label: "Profile", href: "/dashboard/profile", icon: User },
 ];
 
 const DashboardLayout = () => {
@@ -44,7 +44,6 @@ const DashboardLayout = () => {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  if (data.isLoading) return null;
   if (!data.isAuthenticated) return <Navigate to="/sign-in" replace />;
 
   const isAdmin = data.user.role === Role.ADMIN;
@@ -54,32 +53,26 @@ const DashboardLayout = () => {
     <div className="flex min-h-screen bg-background">
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-card transition-transform lg:translate-x-0 lg:static",
+          "fixed inset-y-0 left-0 z-40 w-64 border-r border-border bg-card flex flex-col lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between px-4">
-            <Link
-              to={"/"}
-              className="flex items-center gap-2 font-heading text-lg font-bold"
-            >
-              <Zap className="h-5 w-5 text-primary" />
-              Flow Stack
-            </Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="size-4" />
-            </Button>
-          </div>
+        <div className="flex h-16 shrink-0 items-center justify-between px-4">
+          <Logo />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
 
-          <Separator />
+        <Separator />
 
-          <nav className="flex-1 space-y-1 p-3">
+        <ScrollArea className="flex-1 px-3 py-2">
+          <nav className="space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = location.pathname === item.href;
@@ -101,23 +94,23 @@ const DashboardLayout = () => {
               );
             })}
           </nav>
+        </ScrollArea>
 
-          <div className="border-t border-border p-3">
-            <div className="flex items-center gap-2 px-3 py-2">
-              {isAdmin && <Shield className="size-4 text-purple-500" />}
-              <span className="text-sm font-medium truncate">
-                {data.user?.name}
-              </span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start"
-              onClick={signOut}
-            >
-              Sign Out
-            </Button>
+        <div className="shrink-0 border-t border-border p-3">
+          <div className="flex items-center gap-2 px-3 py-2">
+            {isAdmin && <Shield className="size-4 text-purple-500" />}
+            <span className="text-sm font-medium truncate">
+              {data.isLoading ? "Loading..." : data.user.name}
+            </span>
           </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start"
+            onClick={signOut}
+          >
+            Sign Out
+          </Button>
         </div>
       </aside>
 
@@ -128,8 +121,8 @@ const DashboardLayout = () => {
         />
       )}
 
-      <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-background/80 px-4 backdrop-blur-md lg:px-6">
+      <div className="flex flex-1 flex-col lg:pl-64">
+        <header className="sticky top-0 z-30 flex h-16 shrink-0 items-center gap-4 border-b border-border bg-background/80 px-4 backdrop-blur-md lg:px-6">
           <Button
             variant="ghost"
             size="sm"
@@ -139,10 +132,10 @@ const DashboardLayout = () => {
             <Menu className="size-5" />
           </Button>
           <div className="flex-1" />
-          <AnimatedThemeToggler className="size-9 inline-flex items-center justify-center rounded-none border border-border bg-transparent hover:bg-accent transition-colors" />
+          <ThemeToggle />
         </header>
 
-        <main className="flex-1 p-4 lg:p-6">
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
           <Outlet />
         </main>
       </div>

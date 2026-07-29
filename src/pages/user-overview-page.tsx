@@ -1,5 +1,6 @@
 import ErrorState from "@/components/shared/error-state";
 import LoadingSkeleton from "@/components/shared/loading-skeleton";
+import StatCard from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
@@ -23,7 +24,7 @@ const UserOverviewPage = () => {
   const dashboard = data?.data as TUserDashboard;
 
   return (
-    <div className="space-y-6">
+    <section className="space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-bold">
           Welcome back, {authData.user?.name}!
@@ -33,35 +34,24 @@ const UserOverviewPage = () => {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
-            <ListTodo className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {dashboard?.totalTasks ?? 0}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          title="Total Tasks"
+          value={dashboard?.totalTasks ?? 0}
+          icon={ListTodo}
+        />
 
         {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
           const config = STATUS_CONFIG[key as Status];
           const Icon = config.icon;
 
           return (
-            <Card key={key}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {config.label}
-                </CardTitle>
-                <Icon className={`size-4 ${config.color}`} />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{String(value)}</div>
-              </CardContent>
-            </Card>
+            <StatCard
+              key={key}
+              title={config.label}
+              value={value}
+              icon={Icon}
+            />
           );
         })}
       </div>
@@ -119,7 +109,7 @@ const UserOverviewPage = () => {
           </CardContent>
         </Card>
       )}
-    </div>
+    </section>
   );
 };
 

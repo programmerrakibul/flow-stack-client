@@ -5,13 +5,14 @@ A modern task management frontend built with React 19, TypeScript, and Vite.
 ## Features
 
 - **JWT authentication** with auto-refresh via HttpOnly cookies
-- **Role-based access control** (User & Admin dashboards)
+- **Role-based access control** (User & Admin dashboards under a single `/dashboard` path)
 - **Task management** with CRUD, filtering, search, and pagination
 - **Dashboard analytics** with real-time stats
 - **User management** for admin users
 - **Dark/light theme** with animated transitions
-- **Responsive design** (mobile card views, desktop data tables)
+- **Responsive design** (mobile card views via `renderCard`, desktop data tables)
 - **Type-safe** throughout with TypeScript and Zod validation
+- **Immediate image upload** — profile images upload on file selection, not form submission
 
 ## Prerequisites
 
@@ -62,13 +63,17 @@ pnpm preview
 flow-stack-client/
 ├── src/
 │   ├── components/      # UI components (shared + ui/)
-│   ├── contexts/        # React contexts (auth)
-│   ├── features/        # Feature modules (auth, task, dashboard, home)
 │   ├── hooks/           # Shared custom hooks
-│   ├── lib/             # Utilities, types, API client, enums
-│   ├── providers/       # Context providers (theme, query)
-│   ├── routes/          # Routing config and guards
-│   └── stores/          # Zustand stores
+│   ├── layouts/         # Page layout wrappers
+│   ├── lib/             # Axios config, utilities
+│   ├── pages/           # All page components (route endpoints)
+│   ├── providers/       # Context providers (theme, query, sonner)
+│   ├── routes/          # Routing config and auth guards
+│   ├── services/        # API service functions
+│   ├── stores/          # Zustand stores
+│   ├── types/           # TypeScript type definitions
+│   ├── utils/           # Standalone utility functions
+│   └── validation/      # Zod validation schemas
 ├── public/              # Static assets (favicon, icons)
 ├── AGENTS.md            # Architecture guide
 └── README.md            # This file
@@ -83,11 +88,16 @@ flow-stack-client/
 | Vite 8 | Build tool |
 | Tailwind CSS v4 | Styling |
 | shadcn/ui | Component library |
+| Ark UI | Headless primitives (Tabs, Field, etc.) |
+| Base UI | Headless primitives (Dialog, Dropdown, ScrollArea, etc.) |
 | TanStack Query | Server state |
 | Zustand | Client state |
 | React Hook Form + Zod | Forms & validation |
 | Axios | HTTP client |
+| sonner | Toast notifications |
 | React Router v8 | Routing |
+| next-themes | Theme switching |
+| Motion | Animation library |
 
 ## Scripts
 
@@ -100,8 +110,8 @@ pnpm preview      # Preview production build
 
 ## Architecture
 
-This project follows **Feature-Driven Architecture** where each feature
-module is self-contained with its own components, services, hooks, pages,
-and validation schemas.
+This project follows **Folder-Per-Concern Architecture** with flat directories
+for pages, services, hooks, and validation. Shared UI components live in
+`components/shared/`. Pre-built primitives live in `components/ui/` (do not modify).
 
 For architecture details, see [AGENTS.md](./AGENTS.md).

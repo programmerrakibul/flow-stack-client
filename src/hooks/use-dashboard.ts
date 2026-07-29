@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { taskQueryKeys } from "./use-task";
 
-export const getDashboardQueryKeys = {
+export const dashboardQueryKeys = {
   all: ["dashboard"],
   user: ["dashboard", "user"],
   admin: ["dashboard", "admin"],
@@ -16,7 +16,7 @@ export const useUserDashboard = () => {
   const email = data.isAuthenticated ? data.user.email : "";
 
   return useQuery({
-    queryKey: [{ email }, ...getDashboardQueryKeys.user],
+    queryKey: [{ email }, ...dashboardQueryKeys.user],
     queryFn: () => dashboardService.getUserDashboard(),
   });
 };
@@ -26,7 +26,7 @@ export const useAdminDashboard = () => {
   const email = data.isAuthenticated ? data.user.email : "";
 
   return useQuery({
-    queryKey: [...getDashboardQueryKeys.admin, { email }],
+    queryKey: [...dashboardQueryKeys.admin, { email }],
     queryFn: () => dashboardService.getAdminDashboard(),
   });
 };
@@ -40,7 +40,7 @@ export const useAdminUsers = (params?: {
   const email = data.isAuthenticated ? data.user.email : "";
 
   return useQuery({
-    queryKey: [{ email }, ...getDashboardQueryKeys.admin, "users", params],
+    queryKey: [{ email }, ...dashboardQueryKeys.admin, "users", params],
     queryFn: () => dashboardService.getAdminUsers(params),
   });
 };
@@ -53,7 +53,7 @@ export const useToggleUserActive = () => {
     mutationFn: (userId: string) => dashboardService.toggleUserActive(userId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [...getDashboardQueryKeys.admin, { email }, "users"],
+        queryKey: [...dashboardQueryKeys.admin, { email }, "users"],
       });
       toast.success("User updated", {
         description: "User status has been toggled.",
@@ -103,7 +103,7 @@ export const useAdminTasks = (params?: {
   return useQuery({
     queryKey: [
       { email },
-      ...getDashboardQueryKeys.admin,
+      ...dashboardQueryKeys.admin,
       taskQueryKeys.all,
       params,
     ],

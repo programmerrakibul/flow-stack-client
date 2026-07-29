@@ -1,5 +1,6 @@
 import ErrorState from "@/components/shared/error-state";
 import LoadingSkeleton from "@/components/shared/loading-skeleton";
+import StatCard from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { STATUS_CONFIG } from "@/constants/enums";
@@ -23,6 +24,29 @@ const AdminOverviewPage = () => {
 
   const dashboard = data?.data as TAdminDashboard;
 
+  const statMetrics = [
+    {
+      title: "Total Users",
+      value: dashboard.totalUsers ?? 0,
+      icon: Users,
+    },
+    {
+      title: "Active Users",
+      value: dashboard.activeUsers ?? 0,
+      icon: UserCheck,
+    },
+    {
+      title: "Total Tasks",
+      value: dashboard.totalTasks ?? 0,
+      icon: ListTodo,
+    },
+    {
+      title: "Active Tasks",
+      value: dashboard.tasksByStatus.IN_PROGRESS ?? 0,
+      icon: Activity,
+    },
+  ];
+
   return (
     <section className="space-y-6">
       <div>
@@ -32,54 +56,10 @@ const AdminOverviewPage = () => {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {dashboard.totalUsers ?? 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Users</CardTitle>
-            <UserCheck className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {dashboard.activeUsers ?? 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Tasks</CardTitle>
-            <ListTodo className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {dashboard.totalTasks ?? 0}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
-            <Activity className="size-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {dashboard.tasksByStatus.IN_PROGRESS}
-            </div>
-          </CardContent>
-        </Card>
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        {statMetrics.map(({ title, value, icon: Icon }) => (
+          <StatCard key={title} title={title} value={value} icon={Icon} />
+        ))}
       </div>
 
       <Card>
@@ -87,10 +67,11 @@ const AdminOverviewPage = () => {
           <CardTitle>Tasks by Status</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap">
             {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
               const config = STATUS_CONFIG[key as Status];
               const Icon = config.icon;
+              
               return (
                 <div key={key} className="flex items-center gap-2">
                   <Icon className={`size-4 ${config.color}`} />
@@ -135,7 +116,7 @@ const AdminOverviewPage = () => {
         </Card>
       )}
 
-      {dashboard?.recentActivity && dashboard.recentActivity.length > 0 && (
+      {/* {dashboard?.recentActivity && dashboard.recentActivity.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Activity</CardTitle>
@@ -164,7 +145,7 @@ const AdminOverviewPage = () => {
             </div>
           </CardContent>
         </Card>
-      )}
+      )} */}
     </section>
   );
 };
