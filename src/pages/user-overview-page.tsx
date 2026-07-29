@@ -1,18 +1,21 @@
+import EmptyState from "@/components/shared/empty-state";
 import ErrorState from "@/components/shared/error-state";
 import LoadingSkeleton from "@/components/shared/loading-skeleton";
 import StatCard from "@/components/shared/stat-card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
 import { useUserDashboard } from "@/hooks/use-dashboard";
 import { useAuthStore } from "@/stores/auth-store";
 import type { TUserDashboard } from "@/types/dashboard";
 import type { Priority, Status } from "@/types/task";
-import { ListTodo } from "lucide-react";
-import { Navigate } from "react-router";
+import { ListTodo, Plus } from "lucide-react";
+import { Navigate, useNavigate } from "react-router";
 
 const UserOverviewPage = () => {
   const authData = useAuthStore();
+  const navigate = useNavigate();
   const { data, isLoading, error, refetch } = useUserDashboard();
 
   if (isLoading) return <LoadingSkeleton variant="stats" />;
@@ -78,12 +81,12 @@ const UserOverviewPage = () => {
         </CardContent>
       </Card>
 
-      {dashboard.recentActivity.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {dashboard.recentActivity.length > 0 ? (
             <div className="space-y-3">
               {dashboard.recentActivity.map((task) => {
                 const statusConf = STATUS_CONFIG[task.status];
@@ -106,9 +109,21 @@ const UserOverviewPage = () => {
                 );
               })}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          ) : (
+            <EmptyState
+              title="No recent activity"
+              description="You don't have any recent activity."
+              icon={ListTodo}
+              action={
+                <Button onClick={() => navigate("add-task")}>
+                  <Plus className="size-4" />
+                  Add Task
+                </Button>
+              }
+            />
+          )}
+        </CardContent>
+      </Card>
     </section>
   );
 };

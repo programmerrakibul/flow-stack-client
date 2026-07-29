@@ -12,7 +12,7 @@ const Logo = () => {
   console.log(logo);
 
   return (
-    <Link to="/" className="flex items-center justify-center w-[150px]">
+    <Link to="/" className="flex items-center justify-center w-37.5">
       <img src={logo} alt="logo" className="w-full h-full object-fill" />
     </Link>
   );
