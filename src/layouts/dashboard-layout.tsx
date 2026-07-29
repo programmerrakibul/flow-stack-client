@@ -1,5 +1,6 @@
 import Logo from "@/components/shared/logo";
 import ThemeToggle from "@/components/shared/theme-toggle";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +12,6 @@ import {
   ListTodo,
   Menu,
   PlusCircle,
-  Shield,
   User,
   Users,
   X,
@@ -96,15 +96,28 @@ const DashboardLayout = () => {
           </nav>
         </ScrollArea>
 
-        <div className="shrink-0 border-t border-border p-3">
-          <div className="flex items-center gap-2 px-3 py-2">
-            {isAdmin && <Shield className="size-4 text-purple-500" />}
-            <span className="text-sm font-medium truncate">
-              {data.isLoading ? "Loading..." : data.user.name}
-            </span>
+        <div className="shrink-0 border-t border-border p-3 space-y-2">
+          <div className="flex items-center gap-3 px-1">
+            <AspectRatio ratio={1} className="size-10 shrink-0 overflow-hidden rounded-full bg-muted">
+              {data.user.image ? (
+                <img
+                  src={data.user.image}
+                  alt={data.user.name}
+                  className="size-full object-cover"
+                />
+              ) : (
+                <div className="flex size-full items-center justify-center text-sm font-medium text-muted-foreground">
+                  {data.user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </AspectRatio>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium truncate">{data.user.name}</p>
+              <p className="text-xs text-muted-foreground truncate">{data.user.email}</p>
+            </div>
           </div>
           <Button
-            variant="ghost"
+            variant="secondary"
             size="sm"
             className="w-full justify-start"
             onClick={signOut}
