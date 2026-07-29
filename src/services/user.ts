@@ -19,7 +19,7 @@ export const userService = {
 
   toggleUserActive: async (userId: string) => {
     const { data } = await api.patch<TSuccessResponse>(
-      `/dashboard/admin/users/${userId}/toggle-active`,
+      `/users/${userId}/status`,
     );
 
     if (!data.success) throw new Error(data.message);
@@ -28,9 +28,7 @@ export const userService = {
   },
 
   deleteUser: async (userId: string) => {
-    const { data } = await api.delete<TSuccessResponse>(
-      `/dashboard/admin/users/${userId}`,
-    );
+    const { data } = await api.delete<TSuccessResponse>(`/users/${userId}`);
 
     if (!data.success) throw new Error(data.message);
 
