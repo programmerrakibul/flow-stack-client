@@ -4,8 +4,7 @@ import { Outlet, useLocation } from "react-router";
 
 const RootLayout = () => {
   const location = useLocation();
-
-  const isDashboard = location.pathname.includes("/dashboard");
+  const isDashboard = location.pathname.startsWith("/dashboard");
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -14,6 +13,7 @@ const RootLayout = () => {
       <main className="flex-1">
         <Outlet />
       </main>
+
       {!isDashboard && <Footer />}
     </div>
   );

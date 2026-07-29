@@ -3,25 +3,23 @@ import type { DataTableColumn } from "@/components/shared/data-table";
 import DataTable from "@/components/shared/data-table";
 import ErrorState from "@/components/shared/error-state";
 import SearchInput from "@/components/shared/search-input";
+import UserActionsDropdown from "@/components/shared/user-actions-dropdown";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ROLE_CONFIG } from "@/constants/enums";
-import { useAdminUsers, useDeleteUser } from "@/hooks/use-dashboard-queries";
+import {
+  useAdminUsers,
+  useDeleteUser,
+  useToggleUserActive,
+} from "@/hooks/use-user";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
-import type { TUser } from "@/types/user";
+import type { TAdminUser } from "@/types/dashboard";
 import { Role } from "@/types/user";
-import { MoreHorizontal, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
 const AdminAllUsersPage = () => {
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
+  const [togglingUserId, setTogglingUserId] = useState<string | null>(null);
   const { search, page, limit, setSearch, setPage } = useTaskFilterStore();
 
   const queryParams = useMemo(
@@ -37,6 +35,16 @@ const AdminAllUsersPage = () => {
 
   const { data, isLoading, error, refetch } = useAdminUsers(queryParams);
   const deleteUser = useDeleteUser();
+  const toggleUserActive = useToggleUserActive();
+
+  const handleToggleActive = async (userId: string) => {
+    setTogglingUserId(userId);
+    try {
+      await toggleUserActive.mutateAsync(userId);
+    } finally {
+      setTogglingUserId(null);
+    }
+  };
 
   const handleDelete = async () => {
     if (!deleteUserId) return;
@@ -44,7 +52,7 @@ const AdminAllUsersPage = () => {
     setDeleteUserId(null);
   };
 
-  const columns: DataTableColumn<TUser>[] = [
+  const columns: DataTableColumn<TAdminUser>[] = [
     {
       header: "Name",
       accessor: "name",
@@ -63,6 +71,26 @@ const AdminAllUsersPage = () => {
       },
     },
     {
+      header: "Total Tasks",
+      accessor: "_count",
+      cell: (value) => {
+        const count = (value as TAdminUser["_count"]).tasks;
+        return <span> {count} </span>;
+      },
+    },
+    {
+      header: "Status",
+      accessor: "isActive",
+      cell: (value) => {
+        const isActive = value as boolean;
+        return (
+          <Badge variant={isActive ? "default" : "secondary"}>
+            {isActive ? "Active" : "Inactive"}
+          </Badge>
+        );
+      },
+    },
+    {
       header: "Joined",
       accessor: "createdAt",
       cell: (value) => (
@@ -75,20 +103,12 @@ const AdminAllUsersPage = () => {
       header: "Actions",
       accessor: "id",
       cell: (_, row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="ghost" size="sm" />}>
-            <MoreHorizontal className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={() => setDeleteUserId(row.id)}
-              className="text-destructive"
-            >
-              <Trash2 className="size-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <UserActionsDropdown
+          user={row}
+          onDelete={setDeleteUserId}
+          onToggleActive={handleToggleActive}
+          isToggling={togglingUserId === row.id}
+        />
       ),
     },
   ];
@@ -132,28 +152,25 @@ const AdminAllUsersPage = () => {
                     <p className="text-xs text-muted-foreground">
                       {user.email}
                     </p>
+                    <p className="text-xs text-muted-foreground">
+                      {user._count.tasks} tasks
+                    </p>
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      render={<Button variant="ghost" size="sm" />}
-                    >
-                      <MoreHorizontal className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem
-                        onClick={() => setDeleteUserId(user.id)}
-                        className="text-destructive"
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <UserActionsDropdown
+                    user={user}
+                    onDelete={setDeleteUserId}
+                    onToggleActive={handleToggleActive}
+                    isToggling={togglingUserId === user.id}
+                  />
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Badge variant={roleConf.badgeVariant}>
                     {roleConf.label}
+                  </Badge>
+                  <Badge variant={user.isActive ? "default" : "secondary"}>
+                    {user.isActive ? "Active" : "Inactive"}
                   </Badge>
                   <span className="text-xs text-muted-foreground">
                     Joined {new Date(user.createdAt).toLocaleDateString()}

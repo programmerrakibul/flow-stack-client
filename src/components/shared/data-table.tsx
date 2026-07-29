@@ -1,4 +1,5 @@
-import type { TPagination } from "@/types/api";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Table,
   TableBody,
@@ -7,16 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Empty,
-  EmptyMedia,
-  EmptyTitle,
-  EmptyDescription,
-} from "@/components/ui/empty";
 import { useIsMobile } from "@/hooks/use-mobile";
+import type { TPagination } from "@/types/api";
 import { Inbox } from "lucide-react";
+import EmptyState from "./empty-state";
 
 export interface DataTableColumn<T> {
   header: string;
@@ -58,13 +53,13 @@ function DataTable<T extends object>({
 
   if (!data.length) {
     return (
-      <Empty className="border border-dashed py-12">
-        <EmptyMedia variant="icon">
-          <Inbox />
-        </EmptyMedia>
-        <EmptyTitle>{emptyTitle}</EmptyTitle>
-        <EmptyDescription>{emptyDescription}</EmptyDescription>
-      </Empty>
+      <div className="py-8">
+        <EmptyState
+          title={emptyTitle}
+          description={emptyDescription}
+          icon={Inbox}
+        />
+      </div>
     );
   }
 
@@ -119,11 +114,11 @@ function DataTable<T extends object>({
       )}
 
       {pagination && totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 bg-muted/30 rounded-lg border border-border">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 px-3 sm:px-4 py-3 bg-muted/30 border border-border">
           <div className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left order-2 sm:order-1">
             <div className="hidden sm:block">
-              Page {currentPage} of {totalPages} &bull; Showing{" "}
-              {endIndex} of {total} items
+              Page {currentPage} of {totalPages} &bull; Showing {endIndex} of{" "}
+              {total} items
             </div>
             <div className="sm:hidden">
               {currentPage} / {totalPages}

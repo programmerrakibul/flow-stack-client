@@ -1,8 +1,8 @@
 import AlertDialogConfirm from "@/components/shared/alert-dialog-confirm";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import DataTable from "@/components/shared/data-table";
-import TaskFilters from "@/components/shared/task-filters";
 import ErrorState from "@/components/shared/error-state";
+import TaskFilters from "@/components/shared/task-filters";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,8 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
-import { useAdminTasks } from "@/hooks/use-dashboard-queries";
-import { useDeleteTask, useUpdateTaskStatus } from "@/hooks/use-task";
+import { useDeleteTask, useTasks } from "@/hooks/use-task";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
 import type { TTask } from "@/types/task";
 import { Priority, Status } from "@/types/task";
@@ -39,18 +38,13 @@ const AdminAllTasksPage = () => {
     [page, limit, search, status, priority],
   );
 
-  const { data, isLoading, error, refetch } = useAdminTasks(queryParams);
+  const { data, isLoading, error, refetch } = useTasks(queryParams);
   const deleteTask = useDeleteTask();
-  const updateStatus = useUpdateTaskStatus();
 
   const handleDelete = async () => {
     if (!deleteTaskId) return;
     await deleteTask.mutateAsync(deleteTaskId);
     setDeleteTaskId(null);
-  };
-
-  const handleStatusChange = async (taskId: string, newStatus: Status) => {
-    await updateStatus.mutateAsync({ id: taskId, status: newStatus });
   };
 
   const columns: DataTableColumn<TTask>[] = [
@@ -108,15 +102,6 @@ const AdminAllTasksPage = () => {
             <MoreHorizontal className="size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {Object.values(Status).map((s) => (
-              <DropdownMenuItem
-                key={s}
-                onClick={() => handleStatusChange(row.id, s)}
-                disabled={row.status === s || row.status === Status.COMPLETED}
-              >
-                Mark as {STATUS_CONFIG[s].label}
-              </DropdownMenuItem>
-            ))}
             <DropdownMenuItem
               onClick={() => setDeleteTaskId(row.id)}
               className="text-destructive"
@@ -156,6 +141,7 @@ const AdminAllTasksPage = () => {
         renderCard={(task) => {
           const statusConf = STATUS_CONFIG[task.status];
           const priorityConf = PRIORITY_CONFIG[task.priority];
+
           return (
             <Card key={task.id}>
               <CardHeader>
@@ -178,18 +164,6 @@ const AdminAllTasksPage = () => {
                       <MoreHorizontal className="size-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      {Object.values(Status).map((s) => (
-                        <DropdownMenuItem
-                          key={s}
-                          onClick={() => handleStatusChange(task.id, s)}
-                          disabled={
-                            task.status === s ||
-                            task.status === Status.COMPLETED
-                          }
-                        >
-                          Mark as {STATUS_CONFIG[s].label}
-                        </DropdownMenuItem>
-                      ))}
                       <DropdownMenuItem
                         onClick={() => setDeleteTaskId(task.id)}
                         className="text-destructive"

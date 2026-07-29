@@ -1,27 +1,33 @@
-import DataTable from "@/components/shared/data-table";
-import type { DataTableColumn } from "@/components/shared/data-table";
-import TaskFilters from "@/components/shared/task-filters";
-import ErrorState from "@/components/shared/error-state";
 import AlertDialogConfirm from "@/components/shared/alert-dialog-confirm";
+import type { DataTableColumn } from "@/components/shared/data-table";
+import DataTable from "@/components/shared/data-table";
+import ErrorState from "@/components/shared/error-state";
+import TaskActionsDropdown from "@/components/shared/task-actions-dropdown";
+import TaskFilters from "@/components/shared/task-filters";
+import TaskForm from "@/components/shared/task-form";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { PRIORITY_CONFIG, STATUS_CONFIG } from "@/constants/enums";
-import { useDeleteTask, useTasks, useUpdateTaskStatus } from "@/hooks/use-task";
+import {
+  useDeleteTask,
+  useTasks,
+  useUpdateTask,
+  useUpdateTaskStatus,
+} from "@/hooks/use-task";
 import { useTaskFilterStore } from "@/stores/task-filter-store";
-import { Priority, Status } from "@/types/task";
 import type { TTask } from "@/types/task";
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { Priority, Status } from "@/types/task";
 import { useMemo, useState } from "react";
 
 const MyTasksPage = () => {
   const [deleteTaskId, setDeleteTaskId] = useState<string | null>(null);
+  const [editingTask, setEditingTask] = useState<TTask | null>(null);
   const { search, status, priority, page, limit, setPage } =
     useTaskFilterStore();
 
@@ -41,6 +47,7 @@ const MyTasksPage = () => {
   const { data, isLoading, error, refetch } = useTasks(queryParams);
   const deleteTask = useDeleteTask();
   const updateStatus = useUpdateTaskStatus();
+  const updateTask = useUpdateTask();
 
   const handleStatusChange = async (taskId: string, newStatus: Status) => {
     await updateStatus.mutateAsync({ id: taskId, status: newStatus });
@@ -52,13 +59,21 @@ const MyTasksPage = () => {
     setDeleteTaskId(null);
   };
 
+  const handleEditSubmit = (data: { title: string; description: string; priority: Priority }) => {
+    if (!editingTask) return;
+    updateTask.mutate({ id: editingTask.id, payload: data });
+    setEditingTask(null);
+  };
+
+  const handleEdit = (task: TTask) => {
+    setEditingTask(task);
+  };
+
   const columns: DataTableColumn<TTask>[] = [
     {
       header: "Title",
       accessor: "title",
-      cell: (_, row) => (
-        <span className="font-medium">{row.title}</span>
-      ),
+      cell: (_, row) => <span className="font-medium">{row.title}</span>,
     },
     {
       header: "Description",
@@ -105,38 +120,17 @@ const MyTasksPage = () => {
       header: "Actions",
       accessor: "id",
       cell: (_, row) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="ghost" size="sm" />}>
-            <MoreHorizontal className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {Object.values(Status).map((s) => (
-              <DropdownMenuItem
-                key={s}
-                onClick={() => handleStatusChange(row.id, s)}
-                disabled={row.status === s || row.status === Status.COMPLETED}
-              >
-                Mark as {STATUS_CONFIG[s].label}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuItem
-              onClick={() => setDeleteTaskId(row.id)}
-              className="text-destructive"
-            >
-              <Trash2 className="size-4 mr-2" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <TaskActionsDropdown
+          task={row}
+          onEdit={handleEdit}
+          onDelete={setDeleteTaskId}
+          onStatusChange={handleStatusChange}
+        />
       ),
     },
   ];
 
   const tasks = data?.data ?? [];
-
-  if (error) {
-    return <ErrorState onRetry={() => refetch()} />;
-  }
 
   return (
     <div className="space-y-4">
@@ -149,68 +143,72 @@ const MyTasksPage = () => {
 
       <TaskFilters />
 
-      <DataTable
-        columns={columns}
-        data={tasks}
-        pagination={data?.pagination}
-        isLoading={isLoading}
-        onPageChange={(p) => setPage(p)}
-        renderCard={(task) => {
-          const statusConf = STATUS_CONFIG[task.status];
-          const priorityConf = PRIORITY_CONFIG[task.priority];
-          return (
-            <Card key={task.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <CardTitle>{task.title}</CardTitle>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger
-                      render={<Button variant="ghost" size="sm" />}
-                    >
-                      <MoreHorizontal className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {Object.values(Status).map((s) => (
-                        <DropdownMenuItem
-                          key={s}
-                          onClick={() => handleStatusChange(task.id, s)}
-                          disabled={
-                            task.status === s ||
-                            task.status === Status.COMPLETED
-                          }
-                        >
-                          Mark as {STATUS_CONFIG[s].label}
-                        </DropdownMenuItem>
-                      ))}
-                      <DropdownMenuItem
-                        onClick={() => setDeleteTaskId(task.id)}
-                        className="text-destructive"
-                      >
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {task.description}
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="flex gap-2">
-                  <Badge variant={statusConf.badgeVariant}>
-                    {statusConf.label}
-                  </Badge>
-                  <Badge variant={priorityConf.badgeVariant}>
-                    {priorityConf.label}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        }}
-        emptyTitle="No tasks found"
-        emptyDescription="Create your first task to get started."
-      />
+      {error ? (
+        <ErrorState onRetry={() => refetch()} />
+      ) : (
+        <DataTable
+          columns={columns}
+          data={tasks}
+          pagination={data?.pagination}
+          isLoading={isLoading}
+          onPageChange={(p) => setPage(p)}
+          renderCard={(task) => {
+            const statusConf = STATUS_CONFIG[task.status];
+            const priorityConf = PRIORITY_CONFIG[task.priority];
+            return (
+              <Card key={task.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <CardTitle>{task.title}</CardTitle>
+                    <TaskActionsDropdown
+                      task={task}
+                      onEdit={handleEdit}
+                      onDelete={setDeleteTaskId}
+                      onStatusChange={handleStatusChange}
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {task.description}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-2">
+                    <Badge variant={statusConf.badgeVariant}>
+                      {statusConf.label}
+                    </Badge>
+                    <Badge variant={priorityConf.badgeVariant}>
+                      {priorityConf.label}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          }}
+          emptyTitle="No tasks found"
+          emptyDescription="Create your first task to get started."
+        />
+      )}
+
+      <Dialog open={!!editingTask} onOpenChange={(open) => { if (!open) setEditingTask(null); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Task</DialogTitle>
+          </DialogHeader>
+          {editingTask && (
+            <TaskForm
+              defaultValues={{
+                title: editingTask.title,
+                description: editingTask.description,
+                priority: editingTask.priority,
+              }}
+              onSubmit={handleEditSubmit}
+              submitLabel="Update Task"
+              isSubmitting={updateTask.isPending}
+              onCancel={() => setEditingTask(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       <AlertDialogConfirm
         open={!!deleteTaskId}

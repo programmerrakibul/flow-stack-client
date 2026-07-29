@@ -7,7 +7,10 @@ interface LoadingSkeletonProps {
 }
 
 const StatsSkeleton = () => (
-  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+  <div
+    className="grid gap-4 grid-cols-1
+   md:grid-cols-2 lg:grid-cols-4"
+  >
     {Array.from({ length: 4 }).map((_, i) => (
       <Card key={i}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -48,7 +51,7 @@ const TableSkeleton = ({ rows = 5 }: { rows?: number }) => (
 );
 
 const CardSkeleton = ({ rows = 3 }: { rows?: number }) => (
-  <div className="space-y-4">
+  <div className="space-y-4 w-full">
     {Array.from({ length: rows }).map((_, i) => (
       <Card key={i}>
         <CardHeader>

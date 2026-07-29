@@ -1,22 +1,23 @@
 import Container from "@/components/shared/container";
 import FileUpload from "@/components/shared/file-upload";
+import Logo from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { uploadImage } from "@/lib/upload-image";
+import useImageUpload from "@/hooks/use-image-upload";
 import { signUp, useAuthStore } from "@/stores/auth-store";
 import { signUpSchema, type SignUpFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Zap } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 const SignUpPage = () => {
   const navigate = useNavigate();
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const { upload: uploadImage, isUploading, progress } = useImageUpload();
+  const [imageUrl, setImageUrl] = useState<string>("");
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   const {
@@ -38,24 +39,27 @@ const SignUpPage = () => {
     navigate("/", { replace: true });
   }
 
+  const handleFileSelect = useCallback(
+    async (file: File) => {
+      try {
+        const url = await uploadImage(file);
+        setImageUrl(url);
+      } catch {
+        toast.error("Image upload failed", {
+          description: "Could not upload image. Please try again.",
+        });
+      }
+    },
+    [uploadImage],
+  );
+
   const onSubmit = async (data: SignUpFormData) => {
     try {
-      let imageUrl = data.image || undefined;
-
-      if (data.image && data.image.startsWith("blob:")) {
-        toast.loading("Uploading image...");
-        const response = await fetch(data.image);
-        const blob = await response.blob();
-        const file = new File([blob], "profile.jpg", { type: blob.type });
-        imageUrl = await uploadImage(file, setUploadProgress);
-        setUploadProgress(null);
-      }
-
       await signUp({
         name: data.name,
         email: data.email,
         password: data.password,
-        image: imageUrl,
+        image: imageUrl || data.image || undefined,
       });
 
       toast.success("Welcome!", {
@@ -63,30 +67,57 @@ const SignUpPage = () => {
       });
       navigate("/dashboard", { replace: true });
     } catch {
-      setUploadProgress(null);
       toast.error("Sign up failed", {
         description: "An unexpected error occurred. Please try again.",
       });
     }
   };
 
+  const isLoading = isSubmitting || isUploading;
+
   return (
-    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-14 md:py-18">
       <Container className="max-w-sm space-y-6">
         <div className="text-center">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 font-heading text-2xl font-bold"
-          >
-            <Zap className="size-6 text-primary" />
-            Flow Stack
-          </Link>
+          <div className="flex items-center justify-center">
+            <Logo />
+          </div>
           <p className="mt-2 text-sm text-muted-foreground">
             Create your account
           </p>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <Controller
+            control={control}
+            name="image"
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor="sign-up-image">
+                  Profile Image (optional)
+                </FieldLabel>
+                <FileUpload
+                  value={imageUrl || field.value}
+                  onChange={(v) => {
+                    setImageUrl("");
+                    field.onChange(v ?? "");
+                  }}
+                  onFileSelect={handleFileSelect}
+                  isUploading={isUploading}
+                  className="w-full"
+                />
+                {progress !== null && (
+                  <p className="text-xs text-muted-foreground">
+                    Uploading: {progress}%
+                  </p>
+                )}
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
           <Controller
             control={control}
             name="name"
@@ -173,33 +204,9 @@ const SignUpPage = () => {
             )}
           />
 
-          <Controller
-            control={control}
-            name="image"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="sign-up-image">
-                  Profile Image (optional)
-                </FieldLabel>
-                <FileUpload
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-                {uploadProgress !== null && (
-                  <p className="text-xs text-muted-foreground">
-                    Uploading: {uploadProgress}%
-                  </p>
-                )}
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? <Spinner className="mr-2" /> : null}
-            {isSubmitting ? "Creating account..." : "Sign Up"}
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? <Spinner className="mr-2" /> : null}
+            {isLoading ? "Creating account..." : "Sign Up"}
           </Button>
         </form>
 

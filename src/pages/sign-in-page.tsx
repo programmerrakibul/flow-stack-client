@@ -1,17 +1,18 @@
 import Container from "@/components/shared/container";
+import Logo from "@/components/shared/logo";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
 import { signIn, useAuthStore } from "@/stores/auth-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { signInSchema, type SignInFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff, Zap } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 const SignInPage = () => {
   const navigate = useNavigate();
@@ -52,16 +53,12 @@ const SignInPage = () => {
   };
 
   return (
-    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4">
+    <section className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-14 md:py-18">
       <Container className="max-w-sm space-y-6">
         <div className="text-center">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 font-heading text-2xl font-bold"
-          >
-            <Zap className="size-6 text-primary" />
-            Flow Stack
-          </Link>
+          <div className="flex items-center justify-center">
+            <Logo />
+          </div>
           <p className="mt-2 text-sm text-muted-foreground">
             Sign in to your account
           </p>

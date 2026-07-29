@@ -4,7 +4,7 @@ import { Role } from "@/types/user";
 import { Navigate, Outlet, useLocation } from "react-router";
 
 interface ProtectedRouteProps {
-  allowedRoles: Role[];
+  allowedRoles?: Role[];
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
@@ -26,11 +26,9 @@ const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
   }
 
   const user = data.user;
-  const isAdmin = user.role === Role.ADMIN;
 
-  if (!allowedRoles.includes(user.role)) {
-    const redirectPath = isAdmin ? "/admin" : "/dashboard";
-    return <Navigate to={redirectPath} replace />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;

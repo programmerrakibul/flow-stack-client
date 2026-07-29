@@ -1,4 +1,3 @@
-import { toast } from "sonner";
 import { queryClient } from "@/providers/query-provider";
 import { taskService } from "@/services/task";
 import { useAuthStore } from "@/stores/auth-store";
@@ -8,6 +7,7 @@ import type {
   TaskUpdateFormData,
 } from "@/validation/task.schema";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const taskQueryKeys = {
   all: ["tasks"],
@@ -25,22 +25,13 @@ export const useTasks = (params: TTaskQueryParams) => {
   });
 };
 
-export const useTask = (id: string) => {
-  const data = useAuthStore();
-  const email = data.isAuthenticated ? data.user.email : "";
-
-  return useQuery({
-    queryKey: [...taskQueryKeys.single(id), { email }],
-    queryFn: () => taskService.getById(id),
-    enabled: !!id,
-  });
-};
-
 export const useCreateTask = () => {
   return useMutation({
     mutationFn: (payload: TaskFormData) => taskService.create(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: taskQueryKeys.all,
+      });
       toast.success("Task created", {
         description: "Your task has been created successfully.",
       });
@@ -65,7 +56,9 @@ export const useUpdateTask = () => {
       payload: Partial<TaskUpdateFormData>;
     }) => taskService.update(id, payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: taskQueryKeys.all,
+      });
       toast.success("Task updated", {
         description: "Task has been updated successfully.",
       });
@@ -85,7 +78,9 @@ export const useUpdateTaskStatus = () => {
     mutationFn: ({ id, status }: { id: string; status: Status }) =>
       taskService.updateStatus(id, status),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: taskQueryKeys.all,
+      });
       toast.success("Status updated", {
         description: "Task status has been updated.",
       });
@@ -104,7 +99,9 @@ export const useDeleteTask = () => {
   return useMutation({
     mutationFn: (id: string) => taskService.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: taskQueryKeys.all });
+      queryClient.invalidateQueries({
+        queryKey: taskQueryKeys.all,
+      });
       toast.success("Task deleted", {
         description: "Task has been deleted successfully.",
       });

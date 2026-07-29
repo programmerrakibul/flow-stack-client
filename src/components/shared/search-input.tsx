@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useDebounce } from "@/hooks/use-debounce";
+import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface SearchInputProps {
@@ -39,6 +39,7 @@ const SearchInput = ({
           onChange={(e) => setLocalValue(e.target.value)}
           placeholder={placeholder}
           className="pl-9"
+          type="search"
         />
       </div>
     </div>
