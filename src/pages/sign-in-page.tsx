@@ -1,5 +1,6 @@
 import Container from "@/components/shared/container";
 import Logo from "@/components/shared/logo";
+import PasswordInput from "@/components/shared/password-input";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -8,15 +9,12 @@ import { signIn, useAuthStore } from "@/stores/auth-store";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { signInSchema, type SignInFormData } from "@/validation/auth.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
 const SignInPage = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
   const {
@@ -92,28 +90,13 @@ const SignInPage = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="sign-in-password">Password</FieldLabel>
-                <div className="relative">
-                  <Input
-                    {...field}
-                    id="sign-in-password"
-                    type={showPassword ? "text" : "password"}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Enter your password"
-                    autoComplete="current-password"
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="size-4" />
-                    ) : (
-                      <Eye className="size-4" />
-                    )}
-                  </button>
-                </div>
+                <PasswordInput
+                  {...field}
+                  id="sign-in-password"
+                  aria-invalid={fieldState.invalid}
+                  placeholder="Enter your password"
+                  autoComplete="current-password"
+                />
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

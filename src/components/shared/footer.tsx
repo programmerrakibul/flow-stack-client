@@ -3,10 +3,10 @@ import Logo from "./logo";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border bg-background">
-      <Container className="flex h-16 items-center justify-between">
+    <footer className="border-t border-border bg-background py-4">
+      <Container className="flex items-center justify-between flex-col sm:flex-row">
         <Logo />
-        <p className="text-xs text-muted-foreground whitespace-break-spaces">
+        <p className="text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} Flow Stack. All rights reserved.
         </p>
       </Container>

@@ -5,6 +5,7 @@ import { Tabs as ArkTabs, useTabsContext } from "@ark-ui/react/tabs";
 import type React from "react";
 import { tv, type VariantProps } from "tailwind-variants";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTabs = useTabsContext;
 
 export const Tabs = (props: React.ComponentProps<typeof ArkTabs.Root>) => {
