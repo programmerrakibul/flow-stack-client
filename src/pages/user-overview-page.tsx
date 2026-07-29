@@ -24,7 +24,10 @@ const UserOverviewPage = () => {
 
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data as TUserDashboard;
+  const dashboard = data || ({} as unknown as TUserDashboard);
+  const tasksByStatus = dashboard.tasksByStatus || {};
+  const tasksByPriority = dashboard.tasksByPriority || {};
+  const recentActivity = dashboard.recentActivity || [];
 
   return (
     <section className="space-y-6">
@@ -44,7 +47,7 @@ const UserOverviewPage = () => {
           icon={ListTodo}
         />
 
-        {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
+        {Object.entries(tasksByStatus).map(([key, value]) => {
           const config = STATUS_CONFIG[key as Status];
           const Icon = config.icon;
 
@@ -65,7 +68,7 @@ const UserOverviewPage = () => {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4">
-            {Object.entries(dashboard.tasksByPriority).map(([key, value]) => {
+            {Object.entries(tasksByPriority).map(([key, value]) => {
               const config = PRIORITY_CONFIG[key as Priority];
               const Icon = config.icon;
 
@@ -86,9 +89,9 @@ const UserOverviewPage = () => {
           <CardTitle>Recent Activity</CardTitle>
         </CardHeader>
         <CardContent>
-          {dashboard.recentActivity.length > 0 ? (
+          {recentActivity.length > 0 ? (
             <div className="space-y-3">
-              {dashboard.recentActivity.map((task) => {
+              {recentActivity.map((task) => {
                 const statusConf = STATUS_CONFIG[task.status];
 
                 return (

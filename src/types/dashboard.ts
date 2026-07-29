@@ -9,7 +9,7 @@ export type TasksByPriority = {
   [key in Priority]: number;
 };
 
-export interface TUserDashboard {
+export type TUserDashboard = {
   totalTasks: number;
   tasksByStatus: TasksByStatus;
   tasksByPriority: TasksByPriority;

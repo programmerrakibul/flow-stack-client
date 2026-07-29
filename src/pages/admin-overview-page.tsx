@@ -1,3 +1,4 @@
+import EmptyState from "@/components/shared/empty-state";
 import ErrorState from "@/components/shared/error-state";
 import LoadingSkeleton from "@/components/shared/loading-skeleton";
 import StatCard from "@/components/shared/stat-card";
@@ -8,7 +9,7 @@ import { useAdminDashboard } from "@/hooks/use-dashboard";
 import { useAuthStore } from "@/stores/auth-store";
 import type { TAdminDashboard } from "@/types/dashboard";
 import { Status } from "@/types/task";
-import { Activity, ListTodo, UserCheck, Users } from "lucide-react";
+import { Activity, ListTodo, UserCheck, Users, UsersIcon } from "lucide-react";
 import { Navigate } from "react-router";
 
 const AdminOverviewPage = () => {
@@ -22,7 +23,10 @@ const AdminOverviewPage = () => {
 
   if (error) return <ErrorState onRetry={() => refetch()} />;
 
-  const dashboard = data as TAdminDashboard;
+  const dashboard = data || ({} as unknown as TAdminDashboard);
+  const tasksByStatus = dashboard.tasksByStatus || {};
+  const topActiveCreators = dashboard.topActiveCreators || [];
+  const recentActivity = dashboard.recentActivity || [];
 
   const statMetrics = [
     {
@@ -42,7 +46,7 @@ const AdminOverviewPage = () => {
     },
     {
       title: "Active Tasks",
-      value: dashboard.tasksByStatus.IN_PROGRESS ?? 0,
+      value: tasksByStatus.IN_PROGRESS ?? 0,
       icon: Activity,
     },
   ];
@@ -68,7 +72,7 @@ const AdminOverviewPage = () => {
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 flex-wrap">
-            {Object.entries(dashboard.tasksByStatus).map(([key, value]) => {
+            {Object.entries(tasksByStatus).map(([key, value]) => {
               const config = STATUS_CONFIG[key as Status];
               const Icon = config.icon;
 
@@ -84,14 +88,14 @@ const AdminOverviewPage = () => {
         </CardContent>
       </Card>
 
-      {dashboard.topActiveCreators.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Top Task Creators</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Card>
+        <CardHeader>
+          <CardTitle>Top Task Creators</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {topActiveCreators.length > 0 ? (
             <div className="space-y-3">
-              {dashboard.topActiveCreators.map((item) => (
+              {topActiveCreators.map((item) => (
                 <div
                   key={item.id}
                   className="flex items-center justify-between border-b pb-2 last:border-0"
@@ -112,18 +116,24 @@ const AdminOverviewPage = () => {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
+          ) : (
+            <EmptyState
+              title="No task creators found"
+              description="There are no task creators found."
+              icon={UsersIcon}
+            />
+          )}
+        </CardContent>
+      </Card>
 
-      {/* {dashboard?.recentActivity && dashboard.recentActivity.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-          </CardHeader>
-          <CardContent>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {recentActivity.length > 0 ? (
             <div className="space-y-3">
-              {dashboard.recentActivity.map((task) => {
+              {recentActivity.map((task) => {
                 const statusConf = STATUS_CONFIG[task.status];
                 return (
                   <div
@@ -143,9 +153,15 @@ const AdminOverviewPage = () => {
                 );
               })}
             </div>
-          </CardContent>
-        </Card>
-      )} */}
+          ) : (
+            <EmptyState
+              title="No recent activity"
+              description="You don't have any recent activity."
+              icon={ListTodo}
+            />
+          )}
+        </CardContent>
+      </Card>
     </section>
   );
 };

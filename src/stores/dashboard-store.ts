@@ -10,7 +10,7 @@ type DashboardState = {
 };
 
 const initialState: DashboardState = {
-  isLoading: true,
+  isLoading: false,
   error: null,
   userDashboard: null,
   adminDashboard: null,
